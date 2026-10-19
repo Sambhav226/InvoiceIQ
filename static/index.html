@@ -14,7 +14,7 @@
 /* ================= tokens: light (default) */
 :root{
   --bg:#eceef2;
-  --glow1:rgba(122,140,255,.16);--glow2:rgba(255,160,200,.10);--glow3:rgba(100,215,185,.11);
+  --glow1:rgba(122,140,255,.08);--glow2:rgba(255,160,200,.05);--glow3:rgba(100,215,185,.06);
   --surface:rgba(255,255,255,.80);--surface-solid:#fff;--surface-2:rgba(255,255,255,.72);
   --shell:rgba(255,255,255,.38);--shell-line:rgba(255,255,255,.75);
   --ink:#1d1d1f;--ink2:#6e6e73;--ink3:#86868b;--hair:rgba(0,0,0,.075);--fill:rgba(118,118,128,.08);
@@ -33,34 +33,34 @@
 }
 /* ================= tokens: dark (system, unless user forced light) + forced dark */
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){
-  --bg:#0b0c10;--glow1:rgba(94,110,255,.16);--glow2:rgba(190,90,255,.08);--glow3:rgba(40,200,160,.07);
-  --surface:rgba(30,31,37,.78);--surface-solid:#1c1d22;--surface-2:rgba(255,255,255,.05);
-  --shell:rgba(255,255,255,.035);--shell-line:rgba(255,255,255,.07);
-  --ink:#f5f5f7;--ink2:#a1a1a6;--ink3:#8e8e93;--hair:rgba(255,255,255,.09);--fill:rgba(255,255,255,.07);
-  --blue:#0a84ff;--blue-h:#409cff;--blue-soft:rgba(10,132,255,.16);
-  --green:#30d158;--green-dot:#30d158;--green-soft:rgba(48,209,88,.14);
-  --orange:#ffb340;--orange-dot:#ff9f0a;--orange-soft:rgba(255,159,10,.16);
-  --red:#ff6961;--red-dot:#ff453a;--red-soft:rgba(255,69,58,.15);
-  --nav:rgba(36,37,43,.62);--thumb:#5a5a60;--logo:#f5f5f7;--spot:rgba(255,255,255,.06);
-  --float:0 0 0 .5px rgba(255,255,255,.06),0 1px 1px rgba(0,0,0,.3),0 8px 20px -6px rgba(0,0,0,.5),0 28px 64px -16px rgba(0,0,0,.65);
-  --float-hi:0 0 0 .5px rgba(255,255,255,.09),0 2px 4px rgba(0,0,0,.35),0 14px 30px -8px rgba(0,0,0,.6),0 40px 90px -20px rgba(0,0,0,.8);
-  --edge:inset 0 1px 0 rgba(255,255,255,.07);
-  --shimmer:linear-gradient(90deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.10) 40%,rgba(255,255,255,.05) 80%);
+  --bg:#161618;--glow1:rgba(120,140,255,.05);--glow2:rgba(180,120,255,.03);--glow3:rgba(80,200,170,.03);
+  --surface:#1f1f22;--surface-solid:#1f1f22;--surface-2:rgba(255,255,255,.04);
+  --shell:rgba(255,255,255,.02);--shell-line:rgba(255,255,255,.045);
+  --ink:#e6e6ea;--ink2:#9b9ba1;--ink3:#78787e;--hair:rgba(255,255,255,.07);--fill:rgba(255,255,255,.055);
+  --blue:#4a90e2;--blue-h:#5e9ce6;--blue-soft:rgba(74,144,226,.14);
+  --green:#6cc488;--green-dot:#4bb16c;--green-soft:rgba(75,177,108,.12);
+  --orange:#e2a85a;--orange-dot:#d4923a;--orange-soft:rgba(212,146,58,.13);
+  --red:#e8847c;--red-dot:#d95b52;--red-soft:rgba(217,91,82,.12);
+  --nav:rgba(31,31,34,.72);--thumb:#3a3a3f;--logo:#e6e6ea;--spot:transparent;
+  --float:0 0 0 .5px rgba(255,255,255,.04),0 1px 2px rgba(0,0,0,.22),0 10px 28px -12px rgba(0,0,0,.45);
+  --float-hi:0 0 0 .5px rgba(255,255,255,.06),0 2px 4px rgba(0,0,0,.25),0 18px 40px -14px rgba(0,0,0,.55);
+  --edge:inset 0 1px 0 rgba(255,255,255,.04);
+  --shimmer:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.08) 40%,rgba(255,255,255,.04) 80%);
 }}
 :root[data-theme=dark]{
-  --bg:#0b0c10;--glow1:rgba(94,110,255,.16);--glow2:rgba(190,90,255,.08);--glow3:rgba(40,200,160,.07);
-  --surface:rgba(30,31,37,.78);--surface-solid:#1c1d22;--surface-2:rgba(255,255,255,.05);
-  --shell:rgba(255,255,255,.035);--shell-line:rgba(255,255,255,.07);
-  --ink:#f5f5f7;--ink2:#a1a1a6;--ink3:#8e8e93;--hair:rgba(255,255,255,.09);--fill:rgba(255,255,255,.07);
-  --blue:#0a84ff;--blue-h:#409cff;--blue-soft:rgba(10,132,255,.16);
-  --green:#30d158;--green-dot:#30d158;--green-soft:rgba(48,209,88,.14);
-  --orange:#ffb340;--orange-dot:#ff9f0a;--orange-soft:rgba(255,159,10,.16);
-  --red:#ff6961;--red-dot:#ff453a;--red-soft:rgba(255,69,58,.15);
-  --nav:rgba(36,37,43,.62);--thumb:#5a5a60;--logo:#f5f5f7;--spot:rgba(255,255,255,.06);
-  --float:0 0 0 .5px rgba(255,255,255,.06),0 1px 1px rgba(0,0,0,.3),0 8px 20px -6px rgba(0,0,0,.5),0 28px 64px -16px rgba(0,0,0,.65);
-  --float-hi:0 0 0 .5px rgba(255,255,255,.09),0 2px 4px rgba(0,0,0,.35),0 14px 30px -8px rgba(0,0,0,.6),0 40px 90px -20px rgba(0,0,0,.8);
-  --edge:inset 0 1px 0 rgba(255,255,255,.07);
-  --shimmer:linear-gradient(90deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.10) 40%,rgba(255,255,255,.05) 80%);
+  --bg:#161618;--glow1:rgba(120,140,255,.05);--glow2:rgba(180,120,255,.03);--glow3:rgba(80,200,170,.03);
+  --surface:#1f1f22;--surface-solid:#1f1f22;--surface-2:rgba(255,255,255,.04);
+  --shell:rgba(255,255,255,.02);--shell-line:rgba(255,255,255,.045);
+  --ink:#e6e6ea;--ink2:#9b9ba1;--ink3:#78787e;--hair:rgba(255,255,255,.07);--fill:rgba(255,255,255,.055);
+  --blue:#4a90e2;--blue-h:#5e9ce6;--blue-soft:rgba(74,144,226,.14);
+  --green:#6cc488;--green-dot:#4bb16c;--green-soft:rgba(75,177,108,.12);
+  --orange:#e2a85a;--orange-dot:#d4923a;--orange-soft:rgba(212,146,58,.13);
+  --red:#e8847c;--red-dot:#d95b52;--red-soft:rgba(217,91,82,.12);
+  --nav:rgba(31,31,34,.72);--thumb:#3a3a3f;--logo:#e6e6ea;--spot:transparent;
+  --float:0 0 0 .5px rgba(255,255,255,.04),0 1px 2px rgba(0,0,0,.22),0 10px 28px -12px rgba(0,0,0,.45);
+  --float-hi:0 0 0 .5px rgba(255,255,255,.06),0 2px 4px rgba(0,0,0,.25),0 18px 40px -14px rgba(0,0,0,.55);
+  --edge:inset 0 1px 0 rgba(255,255,255,.04);
+  --shimmer:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.08) 40%,rgba(255,255,255,.04) 80%);
 }
 
 *{box-sizing:border-box}
@@ -69,8 +69,7 @@ body{margin:0;min-height:100dvh;background:var(--bg);color:var(--ink);font:15px/
 /* ambient glows: fixed layer, never scrolls, never intercepts clicks */
 body::before{content:"";position:fixed;inset:-10vh -10vw;z-index:-1;pointer-events:none;
   background:radial-gradient(42vw 36vw at 12% 4%,var(--glow1),transparent 70%),radial-gradient(38vw 32vw at 92% 18%,var(--glow2),transparent 70%),radial-gradient(48vw 40vw at 60% 104%,var(--glow3),transparent 70%);
-  animation:drift 28s var(--spring) infinite alternate}
-@keyframes drift{to{transform:translate3d(2vw,-1.5vh,0) scale(1.04)}}
+}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 50%,transparent);outline-offset:2px;border-radius:12px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -100,7 +99,7 @@ main{max-width:1240px;margin:0 auto;padding:0 28px 72px}
 .hero{padding:76px 0 52px;text-align:center}
 .eyebrow{display:inline-block;padding:5px 12px;border-radius:999px;background:var(--fill);color:var(--ink2);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
 h1{font-size:clamp(40px,6vw,66px);line-height:1.03;letter-spacing:-.048em;font-weight:700;margin:18px 0 14px}
-h1 span{background:linear-gradient(90deg,var(--ink3),color-mix(in srgb,var(--ink3) 55%,var(--blue)));-webkit-background-clip:text;background-clip:text;color:transparent}
+h1 span{color:var(--ink3)}
 .lede{font-size:clamp(17px,2vw,21px);line-height:1.38;color:var(--ink2);max-width:640px;margin:0 auto;letter-spacing:-.015em}
 
 /* ================= double-bezel floating cards */
@@ -109,10 +108,6 @@ h1 span{background:linear-gradient(90deg,var(--ink3),color-mix(in srgb,var(--ink
 .shell.lift:hover{transform:translateY(-3px);box-shadow:inset 0 0 0 .5px var(--shell-line),var(--float-hi)}
 .core{position:relative;background:var(--surface);border-radius:calc(var(--r) - 6px);box-shadow:var(--edge),0 0 0 .5px var(--hair);overflow:hidden;
   transition:background .6s var(--spring)}
-/* cursor spotlight */
-.core::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;opacity:0;transition:opacity .5s var(--spring);
-  background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),var(--spot),transparent 45%)}
-.core:hover::after{opacity:1}
 .sec-title{font-size:13px;font-weight:600;color:var(--ink2);margin:0 6px 12px}
 
 .grid{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:28px;align-items:start}
@@ -176,7 +171,7 @@ button.row:hover .chev{transform:translateX(4px)}
 .runmeta{padding:0 24px 8px;color:var(--ink3);font-size:13px;min-height:27px}
 .progress{height:3px;margin:4px 24px 10px;border-radius:99px;background:var(--fill);overflow:hidden}
 .progress i{display:block;height:100%;width:100%;border-radius:99px;transform-origin:left;transform:scaleX(0);transition:transform .8s var(--spring);
-  background:linear-gradient(90deg,var(--blue),color-mix(in srgb,var(--blue) 50%,#a855f7))}
+  background:var(--blue)}
 
 .stages .row{grid-template-columns:40px 1fr 28px;align-items:start;opacity:.42;transform:translateY(4px)}
 .stages .row[data-s]:not([data-s=pending]){opacity:1;transform:none}
@@ -291,31 +286,38 @@ a.kpi-link{all:unset;cursor:pointer;display:block;height:100%}
 
 /* ================= auth: sheets, account menu */
 .sheet{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:16px;overflow-y:auto;
-  background:color-mix(in srgb,var(--bg) 55%,transparent);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);animation:fade .45s var(--out)}
+  background:color-mix(in srgb,var(--bg) 60%,transparent);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);animation:fade .45s var(--out)}
 @keyframes fade{from{opacity:0}}
-.sheet-card{width:min(420px,100%);animation:rise .7s var(--out)}
-.si{padding:34px 28px 26px;text-align:center;position:relative}
-.si .logo-big{width:52px;height:52px;margin:0 auto}
-.si h2{font-size:25px;font-weight:700;letter-spacing:-.035em;color:var(--ink);text-transform:none;margin:14px 0 6px}
-.si-sub{color:var(--ink2);font-size:14px;line-height:1.45;margin:0 0 22px}
-.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;border-radius:999px;background:var(--surface-solid);font-weight:500;
-  box-shadow:inset 0 0 0 .5px var(--hair),0 1px 2px rgba(0,0,0,.06);transition:transform .5s var(--spring),box-shadow .4s}
-.gbtn:hover{box-shadow:inset 0 0 0 .5px var(--hair),0 6px 16px -6px rgba(0,0,0,.18)}
-.gbtn:active,.wide:active{transform:scale(.98)}
+.auth-card{position:relative;width:min(372px,100%);padding:36px 32px 24px;border-radius:28px;background:var(--surface-solid);
+  box-shadow:var(--float-hi),inset 0 0 0 .5px var(--hair);display:flex;flex-direction:column;gap:12px;text-align:center;animation:rise .7s var(--out)}
+.auth-card .logo-big{width:44px;height:44px;margin:0 auto 6px}
+.auth-card h2{font-size:22px;font-weight:700;letter-spacing:-.03em;color:var(--ink);text-transform:none;margin:0}
+.si-sub{margin:-6px 0 10px;color:var(--ink2);font-size:14px;line-height:1.45}
+.ctl{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:46px;padding:0 16px;border-radius:12px;font:inherit;font-size:15px;font-weight:500;
+  transition:transform .4s var(--spring),box-shadow .35s var(--spring),background .3s}
+.ctl:active{transform:scale(.985)}
+.gbtn{background:var(--surface-solid);color:var(--ink);box-shadow:inset 0 0 0 1px var(--hair)}
+.gbtn:hover{box-shadow:inset 0 0 0 1px var(--hair),0 6px 16px -8px rgba(0,0,0,.2)}
 .gbtn svg{width:18px;height:18px}
-.or{display:flex;align-items:center;gap:12px;color:var(--ink3);font-size:12px;margin:18px 0}
+.ctl.primary{background:var(--blue);color:#fff}.ctl.primary:hover{background:var(--blue-h)}
+.ctl.danger{background:var(--red-soft);color:var(--red)}
+.or{display:flex;align-items:center;gap:12px;color:var(--ink3);font-size:12px;margin:2px 0}
 .or::before,.or::after{content:"";flex:1;height:.5px;background:var(--hair)}
-#si-form{display:grid;gap:10px}
-#si-form input{padding:12px 16px;border-radius:14px;border:0;background:var(--fill);color:var(--ink);font:inherit;transition:box-shadow .35s var(--spring),background .3s}
+#si-form{display:flex;flex-direction:column;gap:10px}
+#si-form input{justify-content:flex-start;border:0;background:var(--fill);color:var(--ink);font-weight:400;text-align:left}
+#si-form input::placeholder{color:var(--ink3)}
 #si-form input:focus{outline:none;background:var(--surface-solid);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 35%,transparent)}
-.wide{width:100%;padding:12px 20px}
-.si-links{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
-.si-links button{color:var(--blue);font-size:13px;font-weight:500}
-.si-err{color:var(--red);font-size:13px;min-height:18px;margin:10px 0 0}
+.si-err{margin:0;color:var(--red);font-size:13px}
+.si-err:empty{display:none}
 .si-err.ok{color:var(--green)}
-.si-note{color:var(--ink3);font-size:12px;margin:8px 0 0}
-.si-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:var(--fill);color:var(--ink2);font-size:13px}
-#pv-seg{display:inline-flex;margin:4px 0 6px}
+.si-links{display:flex;justify-content:center;align-items:center;gap:8px;font-size:13px;color:var(--ink3);margin-top:2px}
+.si-links button{color:var(--blue);font-weight:500}
+.si-guest{margin-top:10px;padding-top:16px;border-top:.5px solid var(--hair);display:flex;flex-direction:column;align-items:center;gap:2px}
+.si-guest button{font-size:14px;font-weight:500;color:var(--ink)}
+.si-guest button:hover{color:var(--blue)}
+.si-guest span,.si-note{font-size:12px;color:var(--ink3);margin:0}
+.si-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:var(--fill);color:var(--ink2);font-size:12px}
+#pv-seg{align-self:center;margin:2px 0}
 #pv-seg button:disabled{opacity:.5;cursor:default}
 .acct-wrap{position:relative}
 .acct{width:34px;height:34px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:var(--blue);color:#fff;font-weight:600;font-size:14px;transition:transform .5s var(--spring)}
@@ -370,7 +372,7 @@ a.kpi-link{all:unset;cursor:pointer;display:block;height:100%}
 .roi-out small{display:block;color:var(--ink2);font-size:12.5px}
 .roi-out b{display:block;font-size:24px;font-weight:700;letter-spacing:-.035em;margin-top:2px}
 .roi-out em{font-style:normal;color:var(--ink3);font-size:12px}
-.roi-out .hero-num{grid-column:1/-1;background:linear-gradient(135deg,var(--green-soft),var(--blue-soft))}
+.roi-out .hero-num{grid-column:1/-1;background:var(--green-soft)}
 .roi-out .hero-num b{font-size:38px;color:var(--green)}
 .roi-note{grid-column:1/-1;margin:2px 2px 0;color:var(--ink3);font-size:12px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
@@ -495,38 +497,36 @@ a.kpi-link{all:unset;cursor:pointer;display:block;height:100%}
   </div>
 </section>
 <div class="sheet" id="signin" role="dialog" aria-modal="true" aria-labelledby="si-title" hidden>
-  <div class="shell sheet-card"><div class="core si">
+  <div class="auth-card">
     <button class="si-close" id="si-close" aria-label="Close" hidden>✕</button>
     <svg class="logo-big" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" style="fill:var(--logo)"/><path d="M8 7.5h6.5l2 2V16.5H8z" fill="none" style="stroke:var(--bg)" stroke-width="1.5" stroke-linejoin="round"/><path d="m10 13 1.5 1.5 3-3" fill="none" stroke="#34c759" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <h2 id="si-title">Sign in to InvoiceIQ</h2>
-    <p class="si-sub" id="si-sub">Your invoices and rules stay private to you, and are deleted automatically after 30 days unless you choose otherwise.</p>
-    <button class="gbtn" id="si-google"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</button>
+    <p class="si-sub" id="si-sub">Your invoices stay private to you.</p>
+    <button class="ctl gbtn" id="si-google"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</button>
     <div class="or">or</div>
     <form id="si-form" novalidate>
-      <input type="email" id="si-email" placeholder="Email" autocomplete="email" aria-label="Email">
-      <input type="password" id="si-pass" placeholder="Password" autocomplete="current-password" aria-label="Password">
-      <button class="btn primary wide" id="si-submit" type="submit">Sign in</button>
+      <input class="ctl" type="email" id="si-email" placeholder="Email" autocomplete="email" aria-label="Email">
+      <input class="ctl" type="password" id="si-pass" placeholder="Password" autocomplete="current-password" aria-label="Password">
+      <button class="ctl primary" id="si-submit" type="submit">Sign in</button>
     </form>
-    <div class="si-links"><button id="si-mode" type="button">Create an account</button><button id="si-forgot" type="button">Forgot password?</button></div>
     <p class="si-err" id="si-err" role="alert"></p>
-    <div id="si-guest-box"><div class="or"></div>
-      <button class="btn ghost wide" id="si-guest">Try as guest</button>
-      <p class="si-note">No account needed. Guest data is deleted after 24 hours.</p></div>
-  </div></div>
+    <div class="si-links"><button id="si-mode" type="button">Create account</button><span aria-hidden="true">·</span><button id="si-forgot" type="button">Forgot password?</button></div>
+    <div class="si-guest" id="si-guest-box"><button id="si-guest" type="button">Continue as guest</button><span>No account needed · data deleted after 24 h</span></div>
+  </div>
 </div>
 
 <div class="sheet" id="privacy" role="dialog" aria-modal="true" aria-labelledby="pv-title" hidden>
-  <div class="shell sheet-card"><div class="core si">
+  <div class="auth-card">
     <button class="si-close" id="pv-close" aria-label="Close">✕</button>
     <h2 id="pv-title">Data &amp; privacy</h2>
-    <p class="si-sub">Your runs, source PDFs and rules are stored privately in your account. Anything older than this is deleted automatically:</p>
+    <p class="si-sub">Your runs, PDFs and rules are private to you and deleted automatically after</p>
     <div class="seg" id="pv-seg" role="group" aria-label="Keep my data for"><span class="thumb" aria-hidden="true"></span>
       <button data-d="7" aria-pressed="false">7 days</button><button data-d="30" aria-pressed="false">30 days</button><button data-d="90" aria-pressed="false">90 days</button></div>
     <p class="si-note" id="pv-note"></p>
     <div class="or"></div>
-    <button class="btn quiet wide" id="pv-delete">Delete all my data now</button>
-    <p class="si-note">Removes every run, PDF and rule you saved. This can't be undone.</p>
-  </div></div>
+    <button class="ctl danger" id="pv-delete">Delete all my data</button>
+    <p class="si-note">Removes every run, PDF and rule. This can't be undone.</p>
+  </div>
 </div>
 
 <p class="foot">Gemini 2.5 Flash on Vertex AI reads the document. Every decision is made by deterministic, auditable rules.</p>
@@ -591,18 +591,6 @@ function setTheme(t){
 }
 $("#theme").onclick = () => { const cur = document.documentElement.dataset.theme || "auto"; setTheme({auto:"light", light:"dark", dark:"auto"}[cur]); };
 setTheme(document.documentElement.dataset.theme || "auto");
-
-// ---------- cursor spotlight on cards (one delegated listener, rAF-throttled)
-let spotRAF;
-addEventListener("pointermove", e => {
-  if (REDUCED || spotRAF) return;
-  spotRAF = requestAnimationFrame(() => {
-    spotRAF = null;
-    const c = e.target.closest && e.target.closest(".core"); if (!c) return;
-    const r = c.getBoundingClientRect();
-    c.style.setProperty("--mx", `${e.clientX - r.left}px`); c.style.setProperty("--my", `${e.clientY - r.top}px`);
-  });
-}, {passive:true});
 
 // ---------- count-up numbers
 function countUp(root){
@@ -966,8 +954,7 @@ async function initAuth(){
 function openSignIn(upgrade){
   const guest = !!(fb && fb.auth.currentUser && fb.auth.currentUser.isAnonymous);
   $("#si-title").textContent = guest ? "Keep your work" : "Sign in to InvoiceIQ";
-  $("#si-sub").textContent = guest ? "Create an account or sign in with a new Google account and your guest invoices come with you." :
-    "Your invoices and rules stay private to you, and are deleted automatically after 30 days unless you choose otherwise.";
+  $("#si-sub").textContent = guest ? "Create an account to keep your guest invoices." : "Your invoices stay private to you.";
   $("#si-close").hidden = !guest; $("#si-guest-box").hidden = guest;
   setMode(guest ? "create" : "signin"); siErr("");
   $("#signin").hidden = false;
@@ -976,7 +963,7 @@ function openSignIn(upgrade){
 function setMode(m){
   siMode = m;
   $("#si-submit").textContent = m === "create" ? "Create account" : "Sign in";
-  $("#si-mode").textContent = m === "create" ? "I already have an account" : "Create an account";
+  $("#si-mode").textContent = m === "create" ? "Have an account? Sign in" : "Create account";
   $("#si-pass").autocomplete = m === "create" ? "new-password" : "current-password";
   $("#si-pass").placeholder = m === "create" ? "Password (8+ characters)" : "Password";
 }
@@ -1048,7 +1035,7 @@ $("#am-signout").onclick = async () => { closeMenu(); await fb.A.signOut(fb.auth
 function paintRetention(){
   const guest = me && me.guest;
   document.querySelectorAll("#pv-seg button").forEach(b => { b.setAttribute("aria-pressed", +b.dataset.d === me.retention_days); b.disabled = guest; });
-  $("#pv-note").textContent = guest ? "Guest data is always deleted after 24 hours. Sign in to choose." : `Currently: deleted ${me.retention_days} days after each run. Changes apply to everything already stored.`;
+  $("#pv-note").textContent = guest ? "Guest data is always deleted after 24 hours. Sign in to choose." : "Changes apply to everything already stored.";
   requestAnimationFrame(() => slide($("#pv-seg")));
 }
 $("#am-privacy").onclick = async () => { closeMenu(); me = await (await api("/api/me")).json(); $("#privacy").hidden = false; paintRetention(); };
