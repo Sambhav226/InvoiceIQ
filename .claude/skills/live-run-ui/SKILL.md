@@ -24,6 +24,13 @@ One file: `static/index.html` (vanilla JS + CSS, no build step, no framework). S
 | PUT | `/api/policy` (`store.Policy` JSON) | saved policy; 422 on out-of-range values |
 | POST | `/api/policy/preview` (`store.Policy` JSON) | per scenario `{current, proposed, changed}`: replayed in a scratch DB from cached extractions, so it costs nothing |
 
+| GET | `/api/config` | public: `{auth:false}` locally, or `{auth:true, firebase:{…web config}}` |
+| GET | `/api/me` | `{uid, guest, email, retention_days, retention_choices}` |
+| PUT | `/api/me/retention` (`{days: 7|30|90}`) | 403 for guests |
+| DELETE | `/api/me/data` | wipes the user's runs, PDFs, rules, profile |
+
+Auth: every `/api` call goes through the `api()` helper, which adds `Authorization: Bearer <Firebase ID token>`; a 401 opens the sign-in sheet. Public endpoints: `/api/config`, `/api/samples*`, and `/api/process/{token}`, where the single-use upload token minted for the user is the credential, because EventSource can't send headers. Replayed PDFs load as an authenticated blob, never a bare iframe URL.
+
 Tabs: **Process**, **Dashboard** (KPI bento, ROI calculator, history), **Rules** (policy editor + what-if preview).
 
 ## Layout

@@ -81,8 +81,9 @@ def extract(pdf_bytes: bytes, sha256: str, cached_only: bool = False) -> tuple[I
         if cache_file.exists():
             return _from_cache(cache_file, "fallback")
         raise
-    CACHE.mkdir(parents=True, exist_ok=True)
-    cache_file.write_text(inv.model_dump_json(indent=2))
+    if os.getenv("INVOICEIQ_AUTH") != "firebase":  # server: user data lives only in their run (with its expiry), never here
+        CACHE.mkdir(parents=True, exist_ok=True)
+        cache_file.write_text(inv.model_dump_json(indent=2))
     return inv, usage
 
 

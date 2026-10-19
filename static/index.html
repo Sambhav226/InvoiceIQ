@@ -289,6 +289,48 @@ a.kpi-link{all:unset;cursor:pointer;display:block;height:100%}
 
 .reveal{animation:rise 1s var(--out) backwards}
 
+/* ================= auth: sheets, account menu */
+.sheet{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:16px;overflow-y:auto;
+  background:color-mix(in srgb,var(--bg) 55%,transparent);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);animation:fade .45s var(--out)}
+@keyframes fade{from{opacity:0}}
+.sheet-card{width:min(420px,100%);animation:rise .7s var(--out)}
+.si{padding:34px 28px 26px;text-align:center;position:relative}
+.si .logo-big{width:52px;height:52px;margin:0 auto}
+.si h2{font-size:25px;font-weight:700;letter-spacing:-.035em;color:var(--ink);text-transform:none;margin:14px 0 6px}
+.si-sub{color:var(--ink2);font-size:14px;line-height:1.45;margin:0 0 22px}
+.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;border-radius:999px;background:var(--surface-solid);font-weight:500;
+  box-shadow:inset 0 0 0 .5px var(--hair),0 1px 2px rgba(0,0,0,.06);transition:transform .5s var(--spring),box-shadow .4s}
+.gbtn:hover{box-shadow:inset 0 0 0 .5px var(--hair),0 6px 16px -6px rgba(0,0,0,.18)}
+.gbtn:active,.wide:active{transform:scale(.98)}
+.gbtn svg{width:18px;height:18px}
+.or{display:flex;align-items:center;gap:12px;color:var(--ink3);font-size:12px;margin:18px 0}
+.or::before,.or::after{content:"";flex:1;height:.5px;background:var(--hair)}
+#si-form{display:grid;gap:10px}
+#si-form input{padding:12px 16px;border-radius:14px;border:0;background:var(--fill);color:var(--ink);font:inherit;transition:box-shadow .35s var(--spring),background .3s}
+#si-form input:focus{outline:none;background:var(--surface-solid);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 35%,transparent)}
+.wide{width:100%;padding:12px 20px}
+.si-links{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
+.si-links button{color:var(--blue);font-size:13px;font-weight:500}
+.si-err{color:var(--red);font-size:13px;min-height:18px;margin:10px 0 0}
+.si-err.ok{color:var(--green)}
+.si-note{color:var(--ink3);font-size:12px;margin:8px 0 0}
+.si-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:var(--fill);color:var(--ink2);font-size:13px}
+#pv-seg{display:inline-flex;margin:4px 0 6px}
+#pv-seg button:disabled{opacity:.5;cursor:default}
+.acct-wrap{position:relative}
+.acct{width:34px;height:34px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:var(--blue);color:#fff;font-weight:600;font-size:14px;transition:transform .5s var(--spring)}
+.acct:active{transform:scale(.92)}
+.acct img{width:100%;height:100%;object-fit:cover}
+.acct.guest{background:var(--fill);color:var(--ink2)}
+.menu{position:absolute;right:0;top:calc(100% + 14px);width:260px;padding:6px;border-radius:18px;text-align:left;background:var(--nav);
+  backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);box-shadow:var(--float-hi),var(--edge);animation:rise .45s var(--out)}
+.menu-head{padding:10px 12px 10px;display:grid;gap:2px;border-bottom:.5px solid var(--hair);margin-bottom:4px}
+.menu-head b{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.menu-head span{color:var(--ink2);font-size:12px}
+.menu button{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:10px;font-size:14px;transition:background .25s}
+.menu button:hover{background:var(--fill)}
+.menu button.accent{color:var(--blue);font-weight:500}
+
 /* ================= rules */
 .rules-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 .field{padding:22px 22px 20px;display:flex;flex-direction:column;gap:4px;height:100%}
@@ -352,6 +394,15 @@ a.kpi-link{all:unset;cursor:pointer;display:block;height:100%}
       <button role="tab" id="tab-rules" aria-controls="rules" aria-selected="false" tabindex="-1" data-tab="rules">Rules</button>
     </div>
     <button class="theme" id="theme" aria-label="Theme: automatic"></button>
+    <div class="acct-wrap" id="acct-wrap" hidden>
+      <button class="acct" id="acct" aria-haspopup="menu" aria-expanded="false" aria-label="Account"></button>
+      <div class="menu" id="acct-menu" role="menu" hidden>
+        <div class="menu-head"><b id="am-name"></b><span id="am-sub"></span></div>
+        <button role="menuitem" class="accent" id="am-upgrade" hidden>Sign in to keep your work</button>
+        <button role="menuitem" id="am-privacy">Data &amp; privacy</button>
+        <button role="menuitem" id="am-signout">Sign out</button>
+      </div>
+    </div>
   </nav>
 </div>
 
@@ -443,6 +494,41 @@ a.kpi-link{all:unset;cursor:pointer;display:block;height:100%}
     <div class="shell"><div class="core"><div class="list" id="rule-preview-list"></div></div></div>
   </div>
 </section>
+<div class="sheet" id="signin" role="dialog" aria-modal="true" aria-labelledby="si-title" hidden>
+  <div class="shell sheet-card"><div class="core si">
+    <button class="si-close" id="si-close" aria-label="Close" hidden>✕</button>
+    <svg class="logo-big" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" style="fill:var(--logo)"/><path d="M8 7.5h6.5l2 2V16.5H8z" fill="none" style="stroke:var(--bg)" stroke-width="1.5" stroke-linejoin="round"/><path d="m10 13 1.5 1.5 3-3" fill="none" stroke="#34c759" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h2 id="si-title">Sign in to InvoiceIQ</h2>
+    <p class="si-sub" id="si-sub">Your invoices and rules stay private to you, and are deleted automatically after 30 days unless you choose otherwise.</p>
+    <button class="gbtn" id="si-google"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</button>
+    <div class="or">or</div>
+    <form id="si-form" novalidate>
+      <input type="email" id="si-email" placeholder="Email" autocomplete="email" aria-label="Email">
+      <input type="password" id="si-pass" placeholder="Password" autocomplete="current-password" aria-label="Password">
+      <button class="btn primary wide" id="si-submit" type="submit">Sign in</button>
+    </form>
+    <div class="si-links"><button id="si-mode" type="button">Create an account</button><button id="si-forgot" type="button">Forgot password?</button></div>
+    <p class="si-err" id="si-err" role="alert"></p>
+    <div id="si-guest-box"><div class="or"></div>
+      <button class="btn ghost wide" id="si-guest">Try as guest</button>
+      <p class="si-note">No account needed. Guest data is deleted after 24 hours.</p></div>
+  </div></div>
+</div>
+
+<div class="sheet" id="privacy" role="dialog" aria-modal="true" aria-labelledby="pv-title" hidden>
+  <div class="shell sheet-card"><div class="core si">
+    <button class="si-close" id="pv-close" aria-label="Close">✕</button>
+    <h2 id="pv-title">Data &amp; privacy</h2>
+    <p class="si-sub">Your runs, source PDFs and rules are stored privately in your account. Anything older than this is deleted automatically:</p>
+    <div class="seg" id="pv-seg" role="group" aria-label="Keep my data for"><span class="thumb" aria-hidden="true"></span>
+      <button data-d="7" aria-pressed="false">7 days</button><button data-d="30" aria-pressed="false">30 days</button><button data-d="90" aria-pressed="false">90 days</button></div>
+    <p class="si-note" id="pv-note"></p>
+    <div class="or"></div>
+    <button class="btn quiet wide" id="pv-delete">Delete all my data now</button>
+    <p class="si-note">Removes every run, PDF and rule you saved. This can't be undone.</p>
+  </div></div>
+</div>
+
 <p class="foot">Gemini 2.5 Flash on Vertex AI reads the document. Every decision is made by deterministic, auditable rules.</p>
 </main>
 
@@ -480,6 +566,16 @@ const LABEL = {sha256:"File fingerprint", type:"Document type", size_kb:"Size (K
   invoice_taxable_value:"Invoice taxable value", remaining_before:"PO balance before", remaining_after:"PO balance after",
   billed_before:"Already billed", matched_paid_invoice:"Matching paid invoice", po_amount:"PO amount", invoice_no:"Invoice no."};
 let es, current, seq = 0, filter = "all", lastRuns = [];
+let AUTH = false, fb = null;  // fb = {auth, A} once the Firebase auth module has loaded
+
+// every /api call goes through here: attaches the signed-in user's Firebase ID token
+async function api(url, opts = {}){
+  const headers = new Headers(opts.headers || {});
+  if (AUTH && fb && fb.auth.currentUser) headers.set("Authorization", "Bearer " + await fb.auth.currentUser.getIdToken());
+  const r = await fetch(url, {...opts, headers});
+  if (r.status === 401 && AUTH) openSignIn();
+  return r;
+}
 
 // ---------- theme: auto (system) → light → dark
 const THEME_ICON = {
@@ -558,7 +654,7 @@ fetch("/api/samples").then(r => r.json()).then(list => {
       <span class="s" style="display:block">${esc(s.scenario)}</span></span><span class="chev" aria-hidden="true">›</span></button>`;
   }).join("");
   box.querySelectorAll("button").forEach(b => { const s = list[b.dataset.i];
-    b.onclick = () => start(() => fetch(`/api/upload/sample/${s.file}`, {method:"POST"}), s.title, `/api/samples/${s.file}`); });
+    b.onclick = () => start(() => api(`/api/upload/sample/${s.file}`, {method:"POST"}), s.title, `/api/samples/${s.file}`); });
 });
 const drop = $("#drop");
 ["dragenter","dragover"].forEach(e => drop.addEventListener(e, ev => {ev.preventDefault(); drop.classList.add("over")}));
@@ -567,7 +663,7 @@ drop.addEventListener("drop", ev => ev.dataTransfer.files[0] && uploadFile(ev.da
 $("#file").onchange = e => { e.target.files[0] && uploadFile(e.target.files[0]); e.target.value = ""; };
 function uploadFile(f){
   const fd = new FormData(); fd.append("file", f);
-  start(() => fetch("/api/upload", {method:"POST", body:fd}), f.name, URL.createObjectURL(f));
+  start(() => api("/api/upload", {method:"POST", body:fd}), f.name, URL.createObjectURL(f));
 }
 
 // ---------- live run
@@ -686,14 +782,15 @@ function render(run, scroll){
   if (scroll) setTimeout(() => $("#decision").scrollIntoView({behavior: REDUCED ? "auto" : "smooth", block:"nearest"}), 250);
 }
 async function review(action){
-  const r = await fetch(`/api/runs/${current.id}/review`, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({action, note: $("#rnote").value})}).catch(() => null);
+  const r = await api(`/api/runs/${current.id}/review`, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({action, note: $("#rnote").value})}).catch(() => null);
   if (r && r.ok) { render(await r.json()); qbadge(); } else $("#rerr").textContent = "Couldn't save. Try again.";
 }
 async function openRun(id){
-  const run = await (await fetch(`/api/runs/${id}`)).json();
+  const run = await (await api(`/api/runs/${id}`)).json();
   tab("process"); es && es.close(); seq++;
-  skeleton(run.filename, `/api/runs/${run.id}/pdf`);
-  run.data.stages.forEach(paint); render(run);
+  skeleton(run.filename, null);
+  api(`/api/runs/${run.id}/pdf`).then(r => r.ok ? r.blob() : null).then(b => { if (b && current === run) $("#doc").src = URL.createObjectURL(b); });
+  current = run; run.data.stages.forEach(paint); render(run);
 }
 
 // ---------- dashboard
@@ -715,7 +812,7 @@ function dashSkeleton(){
 }
 async function loadDash(){
   if (!lastRuns.length) dashSkeleton();
-  const [m, runs] = await Promise.all([fetch("/api/metrics").then(r => r.json()), fetch("/api/runs").then(r => r.json())]);
+  const [m, runs] = await Promise.all([api("/api/metrics").then(r => r.json()), api("/api/runs").then(r => r.json())]);
   lastRuns = runs; lastMetrics = m; roi();
   const F = m.formulas, c = m.counts;
   const card = (inner, cls = "") => `<div class="shell lift ${cls}"><div class="core">${inner}</div></div>`;
@@ -787,7 +884,7 @@ const FIELDS = [
   {k:"controller_limit", t:"Finance Controller signs up to", h:"Above this total, the CFO signs off.", u:"₹", step:50000}];
 let savedPolicy, defaultPolicy;
 async function loadRules(){
-  const r = await (await fetch("/api/policy")).json();
+  const r = await (await api("/api/policy")).json();
   savedPolicy = r.policy; defaultPolicy = r.defaults;
   fillRules(savedPolicy);
   $("#rule-status").textContent = "Changes apply to the next invoice.";
@@ -820,7 +917,7 @@ const apiError = async r => { try { const d = (await r.json()).detail; return Ar
 $("#rule-defaults").onclick = () => { fillRules(defaultPolicy); };
 $("#rule-preview").onclick = async () => {
   const b = $("#rule-preview"); b.disabled = true; $("#rule-status").textContent = "Replaying every scenario…";
-  const r = await fetch("/api/policy/preview", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(readRules())}).catch(() => null);
+  const r = await api("/api/policy/preview", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(readRules())}).catch(() => null);
   b.disabled = false;
   if (!r || !r.ok) { $("#rule-status").textContent = r ? await apiError(r) : "Couldn't reach the server."; return; }
   const rows = await r.json(), flips = rows.filter(x => x.changed).length;
@@ -835,7 +932,7 @@ $("#rule-preview").onclick = async () => {
   $("#rule-preview-box").scrollIntoView({behavior: REDUCED ? "auto" : "smooth", block:"nearest"});
 };
 $("#rule-save").onclick = async () => {
-  const r = await fetch("/api/policy", {method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify(readRules())}).catch(() => null);
+  const r = await api("/api/policy", {method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify(readRules())}).catch(() => null);
   if (!r || !r.ok) { $("#rule-status").textContent = r ? await apiError(r) : "Couldn't reach the server."; return; }
   savedPolicy = await r.json(); markRules();
   $("#rule-status").textContent = "Saved. The next invoice uses these rules.";
@@ -844,12 +941,131 @@ $("#rule-save").onclick = async () => {
 $("#fall").onclick = () => { filter = "all"; hist(); };
 $("#fq").onclick = () => { filter = "queue"; hist(); };
 async function qbadge(){
-  const m = await (await fetch("/api/metrics")).json();
+  const m = await (await api("/api/metrics")).json();
   $("#qbadge").innerHTML = m.pending_review ? `<span class="badge" title="Invoices awaiting review">${m.pending_review}</span>` : "";
   requestAnimationFrame(slideAll);
 }
-$("#reset").onclick = async () => { if (confirm("Clear all run history?")) { await fetch("/api/reset", {method:"POST"}); lastRuns = []; loadDash(); qbadge(); } };
-qbadge(); requestAnimationFrame(slideAll);
+$("#reset").onclick = async () => { if (confirm("Clear all run history?")) { await api("/api/reset", {method:"POST"}); lastRuns = []; loadDash(); qbadge(); } };
+// ---------- auth: Firebase (Google, email/password, guest). Local mode (no config) skips straight to the app.
+const FB = "https://www.gstatic.com/firebasejs/10.12.2/";
+let siMode = "signin";
+const AUTH_MSG = {"auth/invalid-credential":"Email or password is incorrect.", "auth/wrong-password":"Email or password is incorrect.",
+  "auth/user-not-found":"No account with that email. Create one instead.", "auth/email-already-in-use":"An account with this email exists. Sign in instead.",
+  "auth/invalid-email":"Enter a valid email address.", "auth/weak-password":"Use at least 8 characters.", "auth/too-many-requests":"Too many attempts. Try again in a minute.",
+  "auth/network-request-failed":"Network error. Check your connection.", "auth/popup-blocked":"Allow pop-ups for this site, then try again."};
+const siErr = (m, ok) => { $("#si-err").textContent = m || ""; $("#si-err").classList.toggle("ok", !!ok); };
+async function initAuth(){
+  let cfg = {auth:false};
+  try { cfg = await (await fetch("/api/config")).json(); } catch {}
+  AUTH = cfg.auth;
+  if (!AUTH) { onSignedIn(null); return; }
+  const [{initializeApp}, A] = await Promise.all([import(FB + "firebase-app.js"), import(FB + "firebase-auth.js")]);
+  fb = {auth: A.getAuth(initializeApp(cfg.firebase)), A};
+  A.onAuthStateChanged(fb.auth, u => u ? onSignedIn(u) : openSignIn());
+}
+function openSignIn(upgrade){
+  const guest = !!(fb && fb.auth.currentUser && fb.auth.currentUser.isAnonymous);
+  $("#si-title").textContent = guest ? "Keep your work" : "Sign in to InvoiceIQ";
+  $("#si-sub").textContent = guest ? "Create an account or sign in with a new Google account and your guest invoices come with you." :
+    "Your invoices and rules stay private to you, and are deleted automatically after 30 days unless you choose otherwise.";
+  $("#si-close").hidden = !guest; $("#si-guest-box").hidden = guest;
+  setMode(guest ? "create" : "signin"); siErr("");
+  $("#signin").hidden = false;
+  if (upgrade || !guest) setTimeout(() => $("#si-google").focus(), 50);
+}
+function setMode(m){
+  siMode = m;
+  $("#si-submit").textContent = m === "create" ? "Create account" : "Sign in";
+  $("#si-mode").textContent = m === "create" ? "I already have an account" : "Create an account";
+  $("#si-pass").autocomplete = m === "create" ? "new-password" : "current-password";
+  $("#si-pass").placeholder = m === "create" ? "Password (8+ characters)" : "Password";
+}
+async function authed(fn){
+  siErr("");
+  try { await fn(); } catch (e) { if (e.code !== "auth/popup-closed-by-user" && e.code !== "auth/cancelled-popup-request") siErr(AUTH_MSG[e.code] || e.message); }
+}
+async function linked(u){ await u.getIdToken(true); onSignedIn(u); }  // same uid, new provider: refresh token so the server sees it
+$("#si-mode").onclick = () => { setMode(siMode === "create" ? "signin" : "create"); siErr(""); };
+$("#si-close").onclick = () => { $("#signin").hidden = true; };
+$("#si-google").onclick = () => authed(async () => {
+  const {A, auth} = fb, p = new A.GoogleAuthProvider(), u = auth.currentUser;
+  if (u && u.isAnonymous) {
+    try { await A.linkWithPopup(u, p); await linked(u); }
+    catch (e) {
+      if (e.code !== "auth/credential-already-in-use") throw e;
+      if (!confirm("This Google account already has InvoiceIQ data. Switch to it? Your guest invoices stay with the guest session and are deleted within 24 hours.")) return;
+      await A.signInWithCredential(auth, A.GoogleAuthProvider.credentialFromError(e));
+    }
+  } else await A.signInWithPopup(auth, p);
+});
+$("#si-form").onsubmit = ev => { ev.preventDefault(); authed(async () => {
+  const {A, auth} = fb, email = $("#si-email").value.trim(), pass = $("#si-pass").value, u = auth.currentUser;
+  if (!email || !pass) throw {code:"auth/invalid-email"};
+  if (siMode === "create") {
+    if (pass.length < 8) throw {code:"auth/weak-password"};
+    if (u && u.isAnonymous) { await A.linkWithCredential(u, A.EmailAuthProvider.credential(email, pass)); await linked(u); }
+    else await A.createUserWithEmailAndPassword(auth, email, pass);
+  } else await A.signInWithEmailAndPassword(auth, email, pass);
+}); };
+$("#si-forgot").onclick = () => authed(async () => {
+  const email = $("#si-email").value.trim();
+  if (!email) { siErr("Type your email above first."); return; }
+  await fb.A.sendPasswordResetEmail(fb.auth, email);
+  siErr("If an account exists, a reset link is on its way.", true);
+});
+$("#si-guest").onclick = () => authed(() => fb.A.signInAnonymously(fb.auth));
+
+let me = null;
+async function onSignedIn(u){
+  $("#signin").hidden = true;
+  if (me && u && me.uid !== u.uid) {  // switched accounts: clear the previous user's view
+    es && es.close(); seq++; current = null; lastRuns = [];
+    $("#run").hidden = true; $("#empty").hidden = false;
+  }
+  if (AUTH && u) {
+    me = await (await api("/api/me")).json();
+    const name = u.isAnonymous ? "Guest" : (u.displayName || u.email || "Signed in");
+    $("#acct-wrap").hidden = false;
+    $("#acct").className = "acct" + (u.isAnonymous ? " guest" : "");
+    $("#acct").innerHTML = u.photoURL ? `<img src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">` : esc(name[0].toUpperCase());
+    $("#am-name").textContent = name;
+    $("#am-sub").textContent = u.isAnonymous ? "Guest data is deleted after 24 hours" : `${u.email || ""} · data kept ${me.retention_days} days`;
+    $("#am-upgrade").hidden = !u.isAnonymous;
+  }
+  qbadge();
+  if (!$("#dash").hidden) loadDash();
+  if (!$("#rules").hidden) loadRules();
+  requestAnimationFrame(slideAll);
+}
+// account menu
+const closeMenu = () => { $("#acct-menu").hidden = true; $("#acct").setAttribute("aria-expanded", "false"); };
+$("#acct").onclick = e => { e.stopPropagation(); const open = $("#acct-menu").hidden; $("#acct-menu").hidden = !open; $("#acct").setAttribute("aria-expanded", open); };
+addEventListener("click", e => { if (!e.target.closest("#acct-wrap")) closeMenu(); });
+addEventListener("keydown", e => { if (e.key === "Escape") { closeMenu(); $("#privacy").hidden = true; if ($("#si-close").hidden === false) $("#signin").hidden = true; } });
+$("#am-upgrade").onclick = () => { closeMenu(); openSignIn(true); };
+$("#am-signout").onclick = async () => { closeMenu(); await fb.A.signOut(fb.auth); };
+// data & privacy
+function paintRetention(){
+  const guest = me && me.guest;
+  document.querySelectorAll("#pv-seg button").forEach(b => { b.setAttribute("aria-pressed", +b.dataset.d === me.retention_days); b.disabled = guest; });
+  $("#pv-note").textContent = guest ? "Guest data is always deleted after 24 hours. Sign in to choose." : `Currently: deleted ${me.retention_days} days after each run. Changes apply to everything already stored.`;
+  requestAnimationFrame(() => slide($("#pv-seg")));
+}
+$("#am-privacy").onclick = async () => { closeMenu(); me = await (await api("/api/me")).json(); $("#privacy").hidden = false; paintRetention(); };
+$("#pv-close").onclick = () => { $("#privacy").hidden = true; };
+document.querySelectorAll("#pv-seg button").forEach(b => b.onclick = async () => {
+  const r = await api("/api/me/retention", {method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify({days: +b.dataset.d})});
+  if (r.ok) { me.retention_days = (await r.json()).retention_days; paintRetention(); onSignedIn(fb.auth.currentUser); }
+  else $("#pv-note").textContent = await apiError(r);
+});
+$("#pv-delete").onclick = async () => {
+  if (!confirm("Delete every run, PDF and rule in your account? This can't be undone.")) return;
+  const r = await api("/api/me/data", {method:"DELETE"});
+  if (r.ok) { $("#privacy").hidden = true; lastRuns = []; current = null; $("#run").hidden = true; $("#empty").hidden = false; onSignedIn(fb.auth.currentUser); }
+};
+
+requestAnimationFrame(slideAll);
+initAuth();
 </script>
 </body>
 </html>

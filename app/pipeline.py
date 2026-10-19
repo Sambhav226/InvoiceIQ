@@ -236,7 +236,7 @@ def s_po(ctx):
         return result("PO match", [("hold", "No taxable value available to match against a PO.")], {}, ""), False
 
     def remaining(po):
-        return round(po["amount"] - po["billed_to_date"] - store.reserved_on_po(po["po_number"], ctx["run_id"]), 2)
+        return round(po["amount"] - po["billed_to_date"] - store.reserved_on_po(ctx["uid"], po["po_number"], ctx["run_id"]), 2)
 
     P = ctx["policy"]
     tol = min(P.po_tolerance_pct / 100 * base, P.po_tolerance_cap)
@@ -277,7 +277,7 @@ def s_duplicate(ctx):
     key, ctx["fy"] = norm_inv(inv.invoice_number or ""), fy(d)
     f, ev = [], {"normalised_key": f"{v['id']}·{key}·{fy(d) or 'FY?'}", "checked": f"{len(ctx['paid'])} paid invoices + run history",
                  "this_invoice": f"{inv.invoice_number} · {ctx.get('po') or 'no PO'} · {inr(inv.total)}"}
-    hit = store.find("sha256=?", (ctx["sha"],), ctx["run_id"])
+    hit = store.find_same_file(ctx["uid"], ctx["sha"], ctx["run_id"])
     if hit:
         f.append(("reject", f"Identical file already processed as run #{hit['id']} ({hit['decision']})."))
     for p in ctx["paid"]:
@@ -294,12 +294,11 @@ def s_duplicate(ctx):
                                 f"paid on {p['paid_on']}. Likely re-billed under a new number."))
     if not hit and key:
         # FY unknown (unparseable date) -> match on vendor + number alone
-        q, args = ("vendor_id=? AND inv_key=? AND fy=?", (v["id"], key, ctx["fy"])) if ctx["fy"] else ("vendor_id=? AND inv_key=?", (v["id"], key))
-        prior = store.find(f"{q} AND {store.STANDING}", args, ctx["run_id"])
+        prior = store.find_same_invoice(ctx["uid"], v["id"], key, ctx["fy"], ctx["run_id"])
         if prior:
             f.append(("reject", f"Invoice {inv.invoice_number} from this vendor already processed in run #{prior['id']} ({prior['decision']})."))
     if not hit and ctx.get("po") and inv.total is not None:
-        prior = store.find("vendor_id=? AND po_number=? AND abs(total-?)<=1 AND decision='APPROVE'", (v["id"], ctx["po"], inv.total), ctx["run_id"])
+        prior = store.find_rebill(ctx["uid"], v["id"], ctx["po"], inv.total, ctx["run_id"])
         if prior:
             f.append(("reject", f"Same vendor, PO {ctx['po']} and amount {inr(inv.total)} as already-approved invoice "
                                 f"{prior['invoice_number']} (run #{prior['id']}). Likely re-billed under a new number."))
@@ -358,7 +357,7 @@ def _skipped(name):
 
 def _save(ctx, stages, dec, duration):
     inv, v, usage = ctx.get("inv"), ctx.get("vendor"), ctx.get("usage", {})
-    store.finish(ctx["run_id"], decision=dec["decision"], vendor_id=v["id"] if v else None,
+    store.finish(ctx["uid"], ctx["run_id"], decision=dec["decision"], vendor_id=v["id"] if v else None,
                  vendor_name=(v["name"] if v else (inv.vendor_name if inv else None)),
                  invoice_number=inv.invoice_number if inv else None, inv_key=norm_inv(inv.invoice_number or "") if inv else None,
                  fy=ctx.get("fy"), po_number=ctx.get("po"), base=ctx.get("base"), total=inv.total if inv else None,
@@ -366,18 +365,20 @@ def _save(ctx, stages, dec, duration):
                  cached=int(bool(usage.get("cached"))),
                  data={"stages": stages, "decision": dec, "extracted": inv.model_dump() if inv else None,
                        "digital": ctx.get("digital"), "usage": usage})
+    store.save_pdf(ctx["uid"], ctx["run_id"], ctx["pdf"])  # kept only as long as the run itself (same expire_at)
 
 
-def run(pdf: bytes, filename: str, policy: store.Policy | None = None, cached_only: bool = False, pace: float | None = None):
+def run(pdf: bytes, filename: str, uid: str = "local", policy: store.Policy | None = None, cached_only: bool = False,
+        pace: float | None = None):
     """Generator: yields ('start', {...}), ('stage', dict) for 'running' and final state of each stage, then ('done', run).
     Stages 1-4 stream as they execute. Stages 5-7 (PO balance, duplicates, decision) run atomically under DECIDE_LOCK together
     with the DB write, so two concurrent runs can't both consume the same PO balance or both pass a duplicate check;
     their results are then streamed with the same pacing."""
     sha = hashlib.sha256(pdf).hexdigest()
-    run_id = store.create(filename, sha)
+    run_id = store.create(uid, filename, sha)
     vendors, pos, paid = load_master()
-    ctx = {"pdf": pdf, "sha": sha, "run_id": run_id, "vendors": vendors, "pos": pos, "paid": paid,
-           "policy": policy or store.get_policy(), "cached_only": cached_only}
+    ctx = {"pdf": pdf, "sha": sha, "uid": uid, "run_id": run_id, "vendors": vendors, "pos": pos, "paid": paid,
+           "policy": policy or store.get_policy(uid), "cached_only": cached_only}
     pace = PACE if pace is None else pace
     t0, slept, stages, stopped, saved = time.time(), 0.0, [], False, False
     try:
@@ -410,7 +411,7 @@ def run(pdf: bytes, filename: str, policy: store.Policy | None = None, cached_on
                 yield "stage", {"stage": st["stage"], "status": "running"}
                 time.sleep(pace)
             yield "stage", st
-        yield "done", store.get(run_id)
+        yield "done", store.get(uid, run_id)
     finally:
         if not saved:  # client disconnected or crash mid-run: never leave an undecided row
             dec = {"decision": "HOLD", "reasons": [{"severity": "hold", "stage": "Run", "text": "Run was interrupted before a decision. Re-process the invoice."}],

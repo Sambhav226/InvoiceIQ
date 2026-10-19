@@ -26,6 +26,24 @@ Only *Extract* uses an LLM. Every decision is made by deterministic rules you ca
 - **ROI calculator** on the dashboard: enter your invoice volume and clerk cost to get hours freed, labour saved, overpayments caught and net benefit per year. It uses the hold rate actually observed in your runs.
 - **Reviewer loop:** HOLDs are approved or rejected with a note, and the override rate shows when rules are too strict.
 
+## Accounts and data retention
+Sign in with **Google**, **email and password**, or **Try as guest**. Every run, source PDF and rule set is private to that user (Firestore `users/{uid}/…`).
+- Each record carries `expire_at`; Firestore TTL policies delete it automatically. Reads hide expired data even before the sweep.
+- Users choose **7, 30 or 90 days** (default 30) in *Data & privacy*. A change applies to data already stored. **Delete all my data now** wipes runs, PDFs and rules.
+- Guests: data is deleted after 24 hours. Signing in links the guest session, so its invoices carry over.
+- Local dev (no `INVOICEIQ_AUTH`): a single local user on SQLite, no sign-in.
+
+One-time setup (project `jobpilot-66`):
+1. [Firebase console](https://console.firebase.google.com) → Add project → pick the existing Google Cloud project.
+2. Authentication → Sign-in method → enable **Google**, **Email/Password**, **Anonymous**. Under Settings → Authorized domains, add the Cloud Run host.
+3. Project settings → Your apps → Web app → copy `apiKey`, `authDomain`, `appId`.
+4. Firestore and its TTL policies:
+   ```bash
+   gcloud firestore databases create --location=nam5 --project jobpilot-66
+   for g in runs files users; do gcloud firestore fields ttls update expire_at --collection-group=$g --enable-ttl --async --project jobpilot-66; done
+   ```
+5. Deploy with `INVOICEIQ_STORE=firestore,INVOICEIQ_AUTH=firebase,FIREBASE_API_KEY=…,FIREBASE_AUTH_DOMAIN=…,FIREBASE_APP_ID=…` added to `--set-env-vars`.
+
 ## Run locally
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements-dev.txt

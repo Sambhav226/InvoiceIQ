@@ -5,3 +5,5 @@ google-genai==2.31.0
 google-auth==2.62.0
 pypdf==6.20.1
 pydantic==2.14.1
+google-cloud-firestore==2.34.1
+requests==2.34.2

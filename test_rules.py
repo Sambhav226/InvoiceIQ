@@ -3,6 +3,7 @@ Each block pins a bug found in the multi-agent code review."""
 import os
 import tempfile
 import threading
+import time
 
 os.environ["INVOICEIQ_DB"] = tempfile.mktemp(suffix=".db")
 os.environ["INVOICEIQ_PACE"] = "0"
@@ -50,12 +51,12 @@ d, why = go(5, **inv("CN-1", -11800))
 assert d == "HOLD" and "Credit note" in why
 # percent tax rate on tax-inclusive invoice: base must be total/1.18, not total/19
 d, _ = go(6, invoice_number="BL-9", invoice_date="2026-10-01", po_reference="PO-2026-0412", tax_inclusive=True, tax_rate=18, total=11800)
-assert abs(store.listing()[0]["base"] - 10000) < 1
+assert abs(store.listing("local")[0]["base"] - 10000) < 1
 # corrected resend after a reviewer-rejected HOLD is not a duplicate
 store.reset()
 d, _ = go(7, **{**inv("INV-700", 5900), "vendor_gstin": None})
 assert d == "HOLD"
-store.review(store.listing()[0]["id"], "reject", "no GSTIN")
+store.review("local", store.listing("local")[0]["id"], "reject", "no GSTIN")
 assert go(8, **inv("INV-700", 5900))[0] == "APPROVE"
 # concurrent identical invoices: exactly one approved
 store.reset()
@@ -76,4 +77,25 @@ try:
     raise AssertionError("inverted sign-off limits must be rejected")
 except ValueError:
     pass
+# per-user isolation, retention and guest upgrade
+store.reset("alice"); store.reset("bob")
+store.profile("alice", guest=False); store.profile("bob", guest=True)
+for who in ("alice", "bob"):
+    rid = store.create(who, "x.pdf", "sha-" + who)
+    store.finish(who, rid, decision="APPROVE", base=1, total=1)
+    store.save_pdf(who, rid, b"%PDF " + who.encode())
+assert [r["sha256"] for r in store.listing("alice")] == ["sha-alice"], "users must never see each other's runs"
+assert store.get_pdf("alice", 1) == b"%PDF alice" and store.get_pdf("bob", 1) == b"%PDF bob"
+alice_run = store.get("alice", 1)
+assert round((alice_run["expire_at"] - alice_run["created_at"]) / store.DAY) == 30
+bob_run = store.get("bob", 1)
+assert round((bob_run["expire_at"] - bob_run["created_at"]) / store.DAY) == 1, "guest data lives 24 h"
+store.set_retention("alice", 7)
+assert round((store.get("alice", 1)["expire_at"] - alice_run["created_at"]) / store.DAY) == 7, "retention change applies to stored runs"
+store.profile("bob", guest=False)  # guest linked a real account
+assert round((store.get("bob", 1)["expire_at"] - bob_run["created_at"]) / store.DAY) == 30, "upgrade lifts guest retention"
+r = store.get("alice", 1); r["expire_at"] = time.time() - 1; store._b().put_run("alice", r)
+assert store.listing("alice") == [] and store.get_pdf("alice", 1) in (None, b"%PDF alice"), "expired runs are hidden"
+store.delete_all("bob")
+assert store.listing("bob") == [] and store.get_pdf("bob", 1) is None and store._b().user("bob") is None
 print("all rule checks passed")
