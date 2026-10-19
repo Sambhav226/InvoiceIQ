@@ -1,0 +1,44 @@
+[
+  {
+    "file": "h1_acme_clean.pdf",
+    "title": "H1 · Clean invoice",
+    "expected": "APPROVE",
+    "reason": "",
+    "scenario": "Acme stationery invoice: digital PDF, explicit PO, itemised lines, CGST + SGST."
+  },
+  {
+    "file": "e1_brightline_scanned.pdf",
+    "title": "E1 · Phone-scanned, GST bundled",
+    "expected": "HOLD",
+    "reason": "tax invoice",
+    "scenario": "Skewed, noisy scan with no text layer. One bundled line 'inclusive of GST', no tax breakup."
+  },
+  {
+    "file": "e2_northwind_overrun.pdf",
+    "title": "E2 · Milestone over-billing",
+    "expected": "HOLD",
+    "reason": "remaining PO balance",
+    "scenario": "Third milestone invoice on a ₹5L PO with ₹3L already billed. Asks for ₹2.4L."
+  },
+  {
+    "file": "e3_acme_rebill.pdf",
+    "title": "E3 · Paid invoice, new number",
+    "expected": "REJECT",
+    "reason": "INV-0042",
+    "scenario": "An already-paid invoice resubmitted under a new number and date. Hash and number both differ."
+  },
+  {
+    "file": "e4_acme_bank_change.pdf",
+    "title": "E4 · Bank-change fraud",
+    "expected": "HOLD",
+    "reason": "bank details",
+    "scenario": "Looks like Acme, has no PO, and asks to pay a 'new' bank account."
+  },
+  {
+    "file": "e5_brightline_multipage.pdf",
+    "title": "E5 · Two pages, two hidden errors",
+    "expected": "HOLD",
+    "reason": "IGST",
+    "scenario": "12 lines over 2 pages. Totals add up, but one line is ₹100 off and IGST is charged within Karnataka."
+  }
+]

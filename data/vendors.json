@@ -1,0 +1,46 @@
+[
+  {
+    "id": "V001",
+    "name": "Acme Office Supplies Pvt Ltd",
+    "gstin": "29AABCA1234F1Z5",
+    "bank_account": "50100234564521",
+    "ifsc": "HDFC0001234",
+    "status": "active",
+    "contact": "Ravi Menon, +91 80 4123 9000 (on file since 2021)",
+    "tds_section": null,
+    "tds_rate": 0
+  },
+  {
+    "id": "V002",
+    "name": "Northwind Logistics Pvt Ltd",
+    "gstin": "27AACCN5678K1Z2",
+    "bank_account": "001205007788",
+    "ifsc": "ICIC0000012",
+    "status": "active",
+    "contact": "Priya Kulkarni, +91 22 6655 1200",
+    "tds_section": "194C",
+    "tds_rate": 0.02
+  },
+  {
+    "id": "V003",
+    "name": "Brightline IT Services LLP",
+    "gstin": "29AAKFB9012L1Z8",
+    "bank_account": "38291003301",
+    "ifsc": "SBIN0040211",
+    "status": "active",
+    "contact": "Arjun Rao, +91 80 4900 3300",
+    "tds_section": "194J",
+    "tds_rate": 0.02
+  },
+  {
+    "id": "V004",
+    "name": "Quickprint Solutions",
+    "gstin": "29AAQFQ3456M1Z1",
+    "bank_account": "912010045566",
+    "ifsc": "UTIB0000123",
+    "status": "blocked",
+    "contact": "Blocked 2026-06: repeated duplicate billing",
+    "tds_section": null,
+    "tds_rate": 0
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "vendor_name": "NORTHWIND LOGISTICS PVT LTD",
+  "vendor_gstin": "27AACCN5678K1Z2",
+  "bill_to_gstin": "29AAACZ0001A1Z9",
+  "invoice_number": "NWL/26-27/0233",
+  "invoice_date": "2026-10-10",
+  "due_date": null,
+  "po_reference": "PO-2026-0291",
+  "currency": "INR",
+  "line_items": [
+    {
+      "description": "FTL freight Bengaluru-Mumbai, 32ft container (SAC 996511)",
+      "quantity": 12.0,
+      "unit_price": 15000.0,
+      "amount": 180000.0
+    },
+    {
+      "description": "Last-mile distribution, Bengaluru city - Sep (SAC 996511)",
+      "quantity": 1.0,
+      "unit_price": 60000.0,
+      "amount": 60000.0
+    }
+  ],
+  "subtotal": 240000.0,
+  "cgst": null,
+  "sgst": null,
+  "igst": 43200.0,
+  "total_tax": 43200.0,
+  "tax_inclusive": false,
+  "tax_rate": 0.18,
+  "total": 283200.0,
+  "bank_account": "001205007788",
+  "ifsc": "ICIC0000012",
+  "confidence": 0.9,
+  "notes": [
+    "This is milestone invoice 3 against the above PO.",
+    "TDS u/s 194C applicable. Please share TDS certificate quarterly."
+  ]
+}

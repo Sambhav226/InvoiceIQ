@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.db
+uploads/
+.DS_Store
+# private: never publish
+Resume.pdf
+asa-case-study-candidate*.pdf
+.claude/*
+!.claude/skills/

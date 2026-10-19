@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>InvoiceIQ</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='2' width='20' height='20' rx='6' fill='%231d1d1f'/%3E%3Cpath d='m8 12.5 2.5 2.5 5-5.5' fill='none' stroke='%2334c759' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script>
+  // apply saved theme before first paint (no flash)
+  try { const t = localStorage.getItem("iq-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch {}
+</script>
+<style>
+/* ================= tokens: light (default) */
+:root{
+  --bg:#eceef2;
+  --glow1:rgba(122,140,255,.16);--glow2:rgba(255,160,200,.10);--glow3:rgba(100,215,185,.11);
+  --surface:rgba(255,255,255,.80);--surface-solid:#fff;--surface-2:rgba(255,255,255,.72);
+  --shell:rgba(255,255,255,.38);--shell-line:rgba(255,255,255,.75);
+  --ink:#1d1d1f;--ink2:#6e6e73;--ink3:#86868b;--hair:rgba(0,0,0,.075);--fill:rgba(118,118,128,.08);
+  --blue:#0071e3;--blue-h:#0077ed;--blue-soft:rgba(0,113,227,.09);
+  --green:#1f7a35;--green-dot:#34c759;--green-soft:rgba(52,199,89,.12);
+  --orange:#a34a00;--orange-dot:#ff9f0a;--orange-soft:rgba(255,159,10,.14);
+  --red:#c4001a;--red-dot:#ff3b30;--red-soft:rgba(255,59,48,.10);
+  --nav:rgba(255,255,255,.66);--thumb:#fff;--logo:#1d1d1f;
+  --spot:rgba(255,255,255,.55);
+  --float:0 0 0 .5px rgba(0,0,0,.04),0 1px 1px rgba(16,24,40,.03),0 6px 16px -6px rgba(16,24,40,.08),0 24px 56px -16px rgba(16,24,40,.14);
+  --float-hi:0 0 0 .5px rgba(0,0,0,.05),0 2px 3px rgba(16,24,40,.04),0 12px 26px -8px rgba(16,24,40,.12),0 36px 80px -20px rgba(16,24,40,.22);
+  --edge:inset 0 1px 0 rgba(255,255,255,.95);
+  --shimmer:linear-gradient(90deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.09) 40%,rgba(0,0,0,.05) 80%);
+  --spring:cubic-bezier(.32,.72,0,1);--out:cubic-bezier(.16,1,.3,1);
+  --r:30px;
+}
+/* ================= tokens: dark (system, unless user forced light) + forced dark */
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0b0c10;--glow1:rgba(94,110,255,.16);--glow2:rgba(190,90,255,.08);--glow3:rgba(40,200,160,.07);
+  --surface:rgba(30,31,37,.78);--surface-solid:#1c1d22;--surface-2:rgba(255,255,255,.05);
+  --shell:rgba(255,255,255,.035);--shell-line:rgba(255,255,255,.07);
+  --ink:#f5f5f7;--ink2:#a1a1a6;--ink3:#8e8e93;--hair:rgba(255,255,255,.09);--fill:rgba(255,255,255,.07);
+  --blue:#0a84ff;--blue-h:#409cff;--blue-soft:rgba(10,132,255,.16);
+  --green:#30d158;--green-dot:#30d158;--green-soft:rgba(48,209,88,.14);
+  --orange:#ffb340;--orange-dot:#ff9f0a;--orange-soft:rgba(255,159,10,.16);
+  --red:#ff6961;--red-dot:#ff453a;--red-soft:rgba(255,69,58,.15);
+  --nav:rgba(36,37,43,.62);--thumb:#5a5a60;--logo:#f5f5f7;--spot:rgba(255,255,255,.06);
+  --float:0 0 0 .5px rgba(255,255,255,.06),0 1px 1px rgba(0,0,0,.3),0 8px 20px -6px rgba(0,0,0,.5),0 28px 64px -16px rgba(0,0,0,.65);
+  --float-hi:0 0 0 .5px rgba(255,255,255,.09),0 2px 4px rgba(0,0,0,.35),0 14px 30px -8px rgba(0,0,0,.6),0 40px 90px -20px rgba(0,0,0,.8);
+  --edge:inset 0 1px 0 rgba(255,255,255,.07);
+  --shimmer:linear-gradient(90deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.10) 40%,rgba(255,255,255,.05) 80%);
+}}
+:root[data-theme=dark]{
+  --bg:#0b0c10;--glow1:rgba(94,110,255,.16);--glow2:rgba(190,90,255,.08);--glow3:rgba(40,200,160,.07);
+  --surface:rgba(30,31,37,.78);--surface-solid:#1c1d22;--surface-2:rgba(255,255,255,.05);
+  --shell:rgba(255,255,255,.035);--shell-line:rgba(255,255,255,.07);
+  --ink:#f5f5f7;--ink2:#a1a1a6;--ink3:#8e8e93;--hair:rgba(255,255,255,.09);--fill:rgba(255,255,255,.07);
+  --blue:#0a84ff;--blue-h:#409cff;--blue-soft:rgba(10,132,255,.16);
+  --green:#30d158;--green-dot:#30d158;--green-soft:rgba(48,209,88,.14);
+  --orange:#ffb340;--orange-dot:#ff9f0a;--orange-soft:rgba(255,159,10,.16);
+  --red:#ff6961;--red-dot:#ff453a;--red-soft:rgba(255,69,58,.15);
+  --nav:rgba(36,37,43,.62);--thumb:#5a5a60;--logo:#f5f5f7;--spot:rgba(255,255,255,.06);
+  --float:0 0 0 .5px rgba(255,255,255,.06),0 1px 1px rgba(0,0,0,.3),0 8px 20px -6px rgba(0,0,0,.5),0 28px 64px -16px rgba(0,0,0,.65);
+  --float-hi:0 0 0 .5px rgba(255,255,255,.09),0 2px 4px rgba(0,0,0,.35),0 14px 30px -8px rgba(0,0,0,.6),0 40px 90px -20px rgba(0,0,0,.8);
+  --edge:inset 0 1px 0 rgba(255,255,255,.07);
+  --shimmer:linear-gradient(90deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.10) 40%,rgba(255,255,255,.05) 80%);
+}
+
+*{box-sizing:border-box}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;background:var(--bg)}
+body{margin:0;min-height:100dvh;background:var(--bg);color:var(--ink);font:15px/1.47 -apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,sans-serif;letter-spacing:-.01em;transition:background-color .6s var(--spring),color .6s var(--spring)}
+/* ambient glows: fixed layer, never scrolls, never intercepts clicks */
+body::before{content:"";position:fixed;inset:-10vh -10vw;z-index:-1;pointer-events:none;
+  background:radial-gradient(42vw 36vw at 12% 4%,var(--glow1),transparent 70%),radial-gradient(38vw 32vw at 92% 18%,var(--glow2),transparent 70%),radial-gradient(48vw 40vw at 60% 104%,var(--glow3),transparent 70%);
+  animation:drift 28s var(--spring) infinite alternate}
+@keyframes drift{to{transform:translate3d(2vw,-1.5vh,0) scale(1.04)}}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 50%,transparent);outline-offset:2px;border-radius:12px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+[hidden]{display:none!important}
+
+/* ================= floating glass nav */
+.navwrap{position:sticky;top:14px;z-index:10;display:flex;justify-content:center;padding:0 16px;pointer-events:none}
+nav.island{pointer-events:auto;display:flex;align-items:center;gap:14px;padding:7px 7px 7px 18px;border-radius:999px;background:var(--nav);
+  backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);box-shadow:var(--float),var(--edge);transition:background .6s var(--spring)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px;letter-spacing:-.02em}
+.logo svg{width:22px;height:22px}
+.seg{position:relative;display:flex;background:var(--fill);border-radius:999px;padding:3px}
+.seg button{position:relative;z-index:1;padding:6px 15px;border-radius:999px;font-size:13.5px;font-weight:500;color:var(--ink2);transition:color .4s var(--spring);display:flex;gap:6px;align-items:center}
+.seg button[aria-selected=true],.seg button[aria-pressed=true]{color:var(--ink)}
+.seg .thumb{position:absolute;z-index:0;top:3px;bottom:3px;left:3px;width:0;border-radius:999px;background:var(--thumb);box-shadow:0 1px 3px rgba(0,0,0,.14),0 0 0 .5px rgba(0,0,0,.04);transition:transform .55s var(--spring),width .55s var(--spring),background .6s}
+.badge{min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--orange-dot);color:#fff;font-size:11px;font-weight:600;display:inline-grid;place-items:center;animation:pop .5s var(--spring)}
+.theme{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--ink2);background:var(--fill);transition:transform .5s var(--spring),color .3s}
+.theme:hover{color:var(--ink)}
+.theme:active{transform:scale(.92)}
+.theme svg{width:17px;height:17px;transition:transform .6s var(--spring)}
+.theme:hover svg{transform:rotate(-18deg)}
+
+main{max-width:1240px;margin:0 auto;padding:0 28px 72px}
+
+/* ================= hero */
+.hero{padding:76px 0 52px;text-align:center}
+.eyebrow{display:inline-block;padding:5px 12px;border-radius:999px;background:var(--fill);color:var(--ink2);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+h1{font-size:clamp(40px,6vw,66px);line-height:1.03;letter-spacing:-.048em;font-weight:700;margin:18px 0 14px}
+h1 span{background:linear-gradient(90deg,var(--ink3),color-mix(in srgb,var(--ink3) 55%,var(--blue)));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:clamp(17px,2vw,21px);line-height:1.38;color:var(--ink2);max-width:640px;margin:0 auto;letter-spacing:-.015em}
+
+/* ================= double-bezel floating cards */
+.shell{position:relative;background:var(--shell);padding:6px;border-radius:var(--r);box-shadow:inset 0 0 0 .5px var(--shell-line),var(--float);
+  transition:transform .7s var(--spring),box-shadow .7s var(--spring),background .6s}
+.shell.lift:hover{transform:translateY(-3px);box-shadow:inset 0 0 0 .5px var(--shell-line),var(--float-hi)}
+.core{position:relative;background:var(--surface);border-radius:calc(var(--r) - 6px);box-shadow:var(--edge),0 0 0 .5px var(--hair);overflow:hidden;
+  transition:background .6s var(--spring)}
+/* cursor spotlight */
+.core::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;opacity:0;transition:opacity .5s var(--spring);
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),var(--spot),transparent 45%)}
+.core:hover::after{opacity:1}
+.sec-title{font-size:13px;font-weight:600;color:var(--ink2);margin:0 6px 12px}
+
+.grid{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:28px;align-items:start}
+aside{position:sticky;top:84px}
+
+/* ================= drop zone */
+.drop{padding:30px 24px;text-align:center;transition:background .5s var(--spring),transform .6s var(--spring)}
+.drop.over{background:var(--blue-soft);transform:scale(.985)}
+.drop .glyph{width:54px;height:54px;margin:0 auto 12px;border-radius:17px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);transition:transform .7s var(--spring)}
+.drop:hover .glyph{transform:translateY(-3px)}
+.drop .glyph svg{width:26px;height:26px}
+.drop b{display:block;font-size:17px;font-weight:600;letter-spacing:-.02em}
+.drop small{display:block;color:var(--ink2);font-size:13px;margin:2px 0 16px}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:6px 6px 6px 18px;border-radius:999px;background:var(--blue);color:#fff;font-weight:500;font-size:14px;cursor:pointer;
+  box-shadow:0 6px 16px -6px color-mix(in srgb,var(--blue) 70%,transparent);transition:transform .5s var(--spring),background .3s,box-shadow .5s var(--spring)}
+.pill:hover{background:var(--blue-h);box-shadow:0 10px 24px -8px color-mix(in srgb,var(--blue) 80%,transparent)}
+.pill:active{transform:scale(.97)}
+.pill i{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font-style:normal;transition:transform .5s var(--spring)}
+.pill:hover i{transform:translate(2px,-1px) scale(1.06)}
+.pill:focus-within{outline:3px solid color-mix(in srgb,var(--blue) 50%,transparent);outline-offset:2px}
+
+/* ================= grouped list */
+.list{list-style:none;margin:0;padding:6px}
+.row{position:relative;display:grid;grid-template-columns:40px 1fr auto;gap:14px;align-items:center;width:100%;text-align:left;padding:13px 14px;border-radius:18px;
+  transition:background .45s var(--spring),transform .55s var(--spring),opacity .6s var(--spring)}
+.row+.row::before{content:"";position:absolute;left:68px;right:14px;top:0;height:.5px;background:var(--hair)}
+button.row:hover{background:var(--fill)}
+button.row:active{transform:scale(.985)}
+.tile{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--fill);color:var(--ink2);transition:transform .6s var(--spring),background .4s,color .4s}
+button.row:hover .tile{transform:scale(1.06) rotate(-3deg);color:var(--blue)}
+.tile svg{width:21px;height:21px}
+.row .t{font-weight:600;font-size:15px;letter-spacing:-.015em}
+.row .s{color:var(--ink2);font-size:13px;line-height:1.38;margin-top:1px}
+.chev{color:var(--ink3);font-size:20px;transition:transform .5s var(--spring)}
+button.row:hover .chev{transform:translateX(4px)}
+.tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.t-APPROVE{background:var(--green-soft);color:var(--green)}
+.t-HOLD{background:var(--orange-soft);color:var(--orange)}
+.t-REJECT{background:var(--red-soft);color:var(--red)}
+.t-gray{background:var(--fill);color:var(--ink2)}
+.t-risk{background:var(--red-dot);color:#fff}
+.stagger>*{animation:rise .8s var(--out) backwards}
+.stagger>*:nth-child(2){animation-delay:.05s}.stagger>*:nth-child(3){animation-delay:.1s}.stagger>*:nth-child(4){animation-delay:.15s}
+.stagger>*:nth-child(5){animation-delay:.2s}.stagger>*:nth-child(6){animation-delay:.25s}.stagger>*:nth-child(7){animation-delay:.3s}.stagger>*:nth-child(n+8){animation-delay:.35s}
+
+/* ================= skeleton loading */
+.sk{display:block;border-radius:8px;background:var(--shimmer);background-size:300% 100%;animation:shimmer 1.6s linear infinite}
+@keyframes shimmer{from{background-position:100% 0}to{background-position:-200% 0}}
+.sk-row{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:14px}
+.sk-row .sk:first-child{height:40px;border-radius:12px}
+
+/* ================= run panel */
+.empty{padding:100px 32px;text-align:center}
+.empty .tile{width:68px;height:68px;border-radius:22px;margin:0 auto 18px;animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}
+.empty .tile svg{width:30px;height:30px}
+.empty b{display:block;font-size:21px;letter-spacing:-.025em;font-weight:600}
+.empty p{color:var(--ink2);margin:6px auto 0;max-width:340px}
+.runhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:22px 24px 4px}
+.runhead h3{margin:0;font-size:19px;letter-spacing:-.025em;font-weight:600;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.runmeta{padding:0 24px 8px;color:var(--ink3);font-size:13px;min-height:27px}
+.progress{height:3px;margin:4px 24px 10px;border-radius:99px;background:var(--fill);overflow:hidden}
+.progress i{display:block;height:100%;width:100%;border-radius:99px;transform-origin:left;transform:scaleX(0);transition:transform .8s var(--spring);
+  background:linear-gradient(90deg,var(--blue),color-mix(in srgb,var(--blue) 50%,#a855f7))}
+
+.stages .row{grid-template-columns:40px 1fr 28px;align-items:start;opacity:.42;transform:translateY(4px)}
+.stages .row[data-s]:not([data-s=pending]){opacity:1;transform:none}
+.stages .row[data-s=running]{background:var(--blue-soft)}
+.stages .row[data-s=running] .tile{color:var(--blue);background:var(--surface-solid);transform:scale(1.06)}
+.stages .row.cause{background:var(--red-soft)}
+.stages .row.cause.hold{background:var(--orange-soft)}
+.stages .row .ms{color:var(--ink3);font-weight:400;font-size:12px;margin-left:6px}
+.stages .row[data-s=fail] .s{color:var(--red)}
+.stages .row[data-s=running] .s .sk{height:10px;width:62%;margin-top:7px}
+.st-glyph{width:24px;height:24px;margin-top:8px}
+.spin{display:block;width:20px;height:20px;margin:10px 2px 0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 15%,var(--blue));
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px));animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(1turn)}}
+.draw{stroke-dasharray:24;stroke-dashoffset:24;animation:draw .6s var(--spring) .05s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.pop{animation:pop .55s var(--spring)}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+
+.more{margin-top:8px}
+.more summary{list-style:none;cursor:pointer;color:var(--blue);font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.more summary::-webkit-details-marker{display:none}
+.more summary::after{content:"›";transition:transform .45s var(--spring);display:inline-block}
+.more[open] summary::after{transform:rotate(90deg)}
+.more[open]>:not(summary){animation:rise .5s var(--out)}
+.kv{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+.kv td{padding:7px 0;border-top:.5px solid var(--hair);vertical-align:top}
+.kv td:first-child{color:var(--ink2);width:40%;padding-right:12px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;animation:rise .6s var(--out)}
+.cmp div{border-radius:14px;padding:10px 12px;font-size:13px;background:var(--fill)}
+.cmp small{display:block;font-size:10.5px;color:var(--ink2);font-weight:600;letter-spacing:.06em;margin-bottom:2px}
+.cmp .bad{background:var(--red-soft);color:var(--red)}
+.cmp .bad small{color:var(--red)}
+
+/* ================= decision */
+.decision{margin:10px 6px 6px;padding:30px 28px 26px;border-radius:calc(var(--r) - 8px);animation:rise .9s var(--out);box-shadow:inset 0 0 0 .5px var(--hair)}
+@keyframes rise{from{opacity:0;transform:translateY(16px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+.decision.APPROVE{background:linear-gradient(180deg,var(--green-soft),transparent 120%)}
+.decision.HOLD{background:linear-gradient(180deg,var(--orange-soft),transparent 120%)}
+.decision.REJECT{background:linear-gradient(180deg,var(--red-soft),transparent 120%)}
+.dword{font-size:clamp(36px,4.6vw,54px);font-weight:700;letter-spacing:-.048em;line-height:1;margin:10px 0 10px}
+.APPROVE .dword{color:var(--green)}.HOLD .dword{color:var(--orange)}.REJECT .dword{color:var(--red)}
+.verdict{font-size:19px;line-height:1.4;letter-spacing:-.02em;max-width:660px;font-weight:500}
+.reasons{list-style:none;margin:18px 0 0;padding:0}
+.reasons li{display:flex;gap:10px;padding:10px 0;border-top:.5px solid var(--hair);font-size:14px}
+.reasons a{color:var(--ink2);text-decoration:none;font-weight:600;white-space:nowrap}
+.reasons a:hover{color:var(--blue)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.5px;margin:24px 0 4px;background:var(--hair);border-radius:18px;overflow:hidden;box-shadow:0 0 0 .5px var(--hair)}
+.stats div{background:var(--surface-solid);padding:14px 16px}
+.stats small{display:block;color:var(--ink2);font-size:12px}
+.stats b{font-size:21px;font-weight:600;letter-spacing:-.03em}
+.blocked{margin:24px 0 4px;padding:16px 18px;border-radius:18px;background:var(--surface-solid);font-weight:600;font-size:16px;letter-spacing:-.02em;display:flex;gap:10px;align-items:center;box-shadow:0 0 0 .5px var(--hair)}
+.next{margin-top:18px;font-size:14px;color:var(--ink2)}
+.next b{color:var(--ink);font-weight:600}
+.note{position:relative;margin-top:10px;padding:16px 18px;border-radius:18px;background:var(--surface-solid);white-space:pre-wrap;font-size:13.5px;line-height:1.5;box-shadow:0 0 0 .5px var(--hair)}
+.copy{position:absolute;top:10px;right:10px;font-size:12px;font-weight:500;color:var(--blue);padding:4px 10px;border-radius:999px;background:var(--blue-soft)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}
+.actions input{flex:1 1 220px;padding:11px 16px;border-radius:999px;border:0;background:var(--surface-solid);color:var(--ink);box-shadow:inset 0 0 0 .5px var(--hair);font:inherit;font-size:14px}
+.btn{padding:10px 20px;border-radius:999px;font-weight:500;font-size:14px;transition:transform .5s var(--spring),background .3s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue-h)}
+.btn.quiet{background:var(--surface-solid);color:var(--red);box-shadow:inset 0 0 0 .5px var(--hair)}
+.reviewed{margin-top:16px;font-size:13.5px;color:var(--ink2);animation:rise .6s var(--out)}
+.err{margin:10px 6px 6px;padding:18px 20px;border-radius:20px;background:var(--fill)}
+details.doc{margin:6px;border-radius:calc(var(--r) - 8px);background:var(--fill);overflow:hidden}
+details.doc summary{list-style:none;cursor:pointer;padding:14px 20px;font-size:14px;font-weight:500;color:var(--ink2)}
+details.doc summary::-webkit-details-marker{display:none}
+.docframe{width:100%;height:560px;border:0;background:#fff}
+
+/* ================= dashboard */
+.bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(168px,auto);gap:20px;margin-bottom:32px}
+.bento>.shell>.core{height:100%}
+.kpi{padding:22px 22px 18px;height:100%;display:flex;flex-direction:column}
+.kpi small{color:var(--ink2);font-size:13px;font-weight:500}
+.kpi b{font-size:34px;font-weight:700;letter-spacing:-.045em;line-height:1.1;margin-top:8px}
+.kpi em{font-style:normal;color:var(--ink3);font-size:13px;margin-top:2px}
+.kpi .more{margin-top:auto;padding-top:12px}
+.kpi .more summary{font-size:12px}
+.kpi .more p{margin:6px 0 0;font-size:12px;color:var(--ink2)}
+.big{grid-column:span 2;grid-row:span 2}
+.ringtile{flex-direction:row;align-items:center;justify-content:center;gap:36px;padding:28px}
+.ringbox{position:relative;width:196px;height:196px;flex:none}
+.ring{width:100%;height:100%;display:block}
+.ring circle{fill:none;stroke-width:15;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dasharray 1.4s var(--out)}
+.ringlabel{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1}
+.ringlabel b{font-size:44px;font-weight:700;letter-spacing:-.05em;margin:0;line-height:1}
+.ringlabel b sup{font-size:20px;font-weight:600;letter-spacing:-.02em;vertical-align:top;position:relative;top:4px;margin-left:1px}
+.ringlabel span{font-size:12px;color:var(--ink2);margin-top:6px}
+.ringside{display:flex;flex-direction:column;min-width:0}
+.ringside b{font-size:34px;margin-top:4px}
+.legend{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:6px}
+.legend li{display:grid;grid-template-columns:10px 1fr auto;align-items:center;gap:10px;font-size:14px}
+.legend li span:last-child{font-weight:600;font-variant-numeric:tabular-nums}
+.legend i{width:10px;height:10px;border-radius:50%}
+.wide{grid-column:span 2}
+a.kpi-link{all:unset;cursor:pointer;display:block;height:100%}
+.histhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 6px 12px}
+.histhead .sec-title{margin:0}
+.textbtn{color:var(--red);font-size:13px;font-weight:500;padding:6px 12px;border-radius:999px;transition:background .3s}
+.textbtn:hover{background:var(--red-soft)}
+.hist .row{grid-template-columns:40px 1fr auto}
+.hist .amt{text-align:right}
+.hist .amt b{display:block;font-weight:600;font-size:15px;letter-spacing:-.02em}
+.hist .amt small{color:var(--ink3);font-size:12px}
+.dot{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:15px;color:#fff;box-shadow:0 6px 14px -6px rgba(0,0,0,.35)}
+.d-APPROVE{background:var(--green-dot)}.d-HOLD{background:var(--orange-dot)}.d-REJECT{background:var(--red-dot)}
+.tags{display:inline-flex;gap:6px;margin-left:6px;vertical-align:1px}
+.hempty{padding:48px;text-align:center;color:var(--ink2)}
+.foot{color:var(--ink3);font-size:12px;text-align:center;margin:60px 0 0}
+
+.reveal{animation:rise 1s var(--out) backwards}
+
+/* ================= rules */
+.rules-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.field{padding:22px 22px 20px;display:flex;flex-direction:column;gap:4px;height:100%}
+.field b{font-size:15px;font-weight:600;letter-spacing:-.015em;display:flex;align-items:center;gap:8px}
+.field b .mod{width:7px;height:7px;border-radius:50%;background:var(--blue);opacity:0;transform:scale(.4);transition:opacity .4s var(--spring),transform .5s var(--spring)}
+.field.changed b .mod{opacity:1;transform:none}
+.field p{margin:0;color:var(--ink2);font-size:13px;line-height:1.4}
+.inp{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:14px}
+.inp input{width:100%;min-width:0;padding:10px 14px;border-radius:12px;border:0;background:var(--fill);color:var(--ink);font:inherit;font-size:17px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;transition:box-shadow .35s var(--spring),background .35s}
+.inp input:focus{outline:none;background:var(--surface-solid);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 35%,transparent)}
+.inp span{color:var(--ink2);font-size:13px;white-space:nowrap}
+.switch{appearance:none;-webkit-appearance:none;flex:none;width:51px;height:31px;border-radius:999px;background:var(--fill);position:relative;cursor:pointer;transition:background .35s var(--spring);margin:0}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:transform .45s var(--spring)}
+.switch:checked{background:var(--green-dot)}
+.switch:checked::after{transform:translateX(20px)}
+.switch:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 50%,transparent);outline-offset:2px}
+.rulebar{position:sticky;bottom:18px;z-index:5;margin:28px auto 0;width:max-content;max-width:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;padding:8px;border-radius:999px;background:var(--nav);
+  backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);box-shadow:var(--float),var(--edge)}
+.rulebar .status{font-size:13px;color:var(--ink2);padding:0 10px;min-width:0}
+.btn.ghost{background:var(--fill);color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.preview{margin-top:28px}
+.preview .row{grid-template-columns:40px 1fr auto}
+.preview .row.flip{background:var(--blue-soft)}
+.arrow{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.arrow i{font-style:normal;color:var(--ink3)}
+.hint{margin:0 6px 16px;color:var(--ink2);font-size:13.5px}
+.hint b{color:var(--ink);font-weight:600}
+
+/* ================= ROI */
+.roi{display:grid;grid-template-columns:300px 1fr}
+.roi-in{padding:24px;border-right:.5px solid var(--hair);display:grid;gap:14px;align-content:start}
+.roi-in label{display:grid;gap:6px;font-size:13px;color:var(--ink2);font-weight:500}
+.roi-in .inp{padding-top:0}
+.roi-out{padding:24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-content:start}
+.roi-out div{padding:14px 16px;border-radius:16px;background:var(--fill)}
+.roi-out small{display:block;color:var(--ink2);font-size:12.5px}
+.roi-out b{display:block;font-size:24px;font-weight:700;letter-spacing:-.035em;margin-top:2px}
+.roi-out em{font-style:normal;color:var(--ink3);font-size:12px}
+.roi-out .hero-num{grid-column:1/-1;background:linear-gradient(135deg,var(--green-soft),var(--blue-soft))}
+.roi-out .hero-num b{font-size:38px;color:var(--green)}
+.roi-note{grid-column:1/-1;margin:2px 2px 0;color:var(--ink3);font-size:12px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media (max-width:1040px){.bento{grid-template-columns:repeat(2,minmax(0,1fr))}.big{grid-row:auto}}
+@media (max-width:820px){
+  .rules-grid,.roi,.roi-out{grid-template-columns:1fr}.roi-in{border-right:0;border-bottom:.5px solid var(--hair)}
+  main{padding:0 16px 48px}.grid{grid-template-columns:1fr}aside{position:static}.hero{padding:52px 0 32px}
+  .bento{grid-template-columns:1fr}.big,.wide{grid-column:auto}.ringtile{flex-direction:column;gap:20px}
+  .cmp{grid-template-columns:1fr}.logo span{display:none}.decision{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+<div class="navwrap">
+  <nav class="island" aria-label="Main">
+    <div class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" style="fill:var(--logo)"/><path d="M8 7.5h6.5l2 2V16.5H8z" fill="none" style="stroke:var(--bg)" stroke-width="1.5" stroke-linejoin="round"/><path d="m10 13 1.5 1.5 3-3" fill="none" stroke="#34c759" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>InvoiceIQ</span></div>
+    <div class="seg" role="tablist" aria-label="Views">
+      <span class="thumb" aria-hidden="true"></span>
+      <button role="tab" id="tab-process" aria-controls="process" aria-selected="true" data-tab="process">Process</button>
+      <button role="tab" id="tab-dash" aria-controls="dash" aria-selected="false" tabindex="-1" data-tab="dash">Dashboard <span id="qbadge"></span></button>
+      <button role="tab" id="tab-rules" aria-controls="rules" aria-selected="false" tabindex="-1" data-tab="rules">Rules</button>
+    </div>
+    <button class="theme" id="theme" aria-label="Theme: automatic"></button>
+  </nav>
+</div>
+
+<main>
+<section id="process" role="tabpanel" aria-labelledby="tab-process">
+  <header class="hero reveal">
+    <span class="eyebrow">Accounts Payable · AI</span>
+    <h1>Every invoice. <span>Decided.</span></h1>
+    <p class="lede">Drop a PDF, clean or scanned. Seven checks run in seconds, and your team only sees what actually needs them.</p>
+  </header>
+
+  <div class="grid">
+    <aside class="reveal" style="animation-delay:.08s">
+      <div class="shell lift"><div class="core drop" id="drop">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></div>
+        <b>Drop an invoice</b>
+        <small>PDF · digital or scanned · up to 10 MB</small>
+        <label class="pill">Choose PDF <i aria-hidden="true">↗</i><input type="file" id="file" accept="application/pdf" class="sr"></label>
+      </div></div>
+
+      <p class="sec-title" style="margin-top:28px">Demo scenarios</p>
+      <div class="shell"><div class="core"><div class="list" id="samples">
+        <div class="sk-row"><span class="sk"></span><span><span class="sk" style="height:12px;width:55%"></span><span class="sk" style="height:10px;width:85%;margin-top:8px"></span></span></div>
+        <div class="sk-row"><span class="sk"></span><span><span class="sk" style="height:12px;width:45%"></span><span class="sk" style="height:10px;width:80%;margin-top:8px"></span></span></div>
+        <div class="sk-row"><span class="sk"></span><span><span class="sk" style="height:12px;width:60%"></span><span class="sk" style="height:10px;width:75%;margin-top:8px"></span></span></div>
+      </div></div></div>
+    </aside>
+
+    <div class="shell reveal" id="runcard" style="animation-delay:.16s"><div class="core">
+      <div class="empty" id="empty">
+        <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></div>
+        <b>Ready when you are.</b>
+        <p>Pick a scenario or drop a PDF. You'll watch each check run live, then get a decision with the reason in plain English.</p>
+      </div>
+      <div id="run" hidden>
+        <div class="runhead"><h3 id="rtitle"></h3><span id="rbadges" style="display:flex;gap:6px;flex-wrap:wrap"></span></div>
+        <div class="runmeta num" id="rmeta"></div>
+        <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+        <ol class="list stages" id="timeline" aria-live="polite"></ol>
+        <div id="decision"></div>
+        <details class="doc" id="docwrap"><summary>View source document ›</summary><iframe class="docframe" id="doc" title="Invoice PDF"></iframe></details>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<section id="dash" role="tabpanel" aria-labelledby="tab-dash" hidden>
+  <header class="hero">
+    <span class="eyebrow">Performance</span>
+    <h1>Overview.</h1>
+    <p class="lede">What the process caught, what it saved, and what still needs a human.</p>
+  </header>
+  <div class="bento" id="kpis"></div>
+  <p class="sec-title">What it's worth at your volume</p>
+  <div class="shell" style="margin-bottom:32px"><div class="core roi">
+    <div class="roi-in">
+      <label>Invoices per month<div class="inp"><input type="number" id="roi-vol" min="0" step="50" inputmode="numeric"></div></label>
+      <label>AP clerk cost per hour<div class="inp"><input type="number" id="roi-rate" min="0" step="50" inputmode="numeric"><span>₹</span></div></label>
+      <label>Average invoice value<div class="inp"><input type="number" id="roi-avg" min="0" step="5000" inputmode="numeric"><span>₹</span></div></label>
+      <label>Overpayments caught, your estimate<div class="inp"><input type="number" id="roi-leak" min="0" max="5" step="0.05" inputmode="decimal"><span>% of spend</span></div></label>
+    </div>
+    <div class="roi-out" id="roi-out"></div>
+  </div></div>
+  <div class="histhead"><p class="sec-title">Run history</p>
+    <div style="display:flex;gap:10px;align-items:center">
+      <div class="seg" role="group" aria-label="Filter"><span class="thumb" aria-hidden="true"></span>
+        <button id="fall" aria-pressed="true">All</button><button id="fq" aria-pressed="false">Needs review</button></div>
+      <button class="textbtn" id="reset">Reset demo</button>
+    </div>
+  </div>
+  <div class="shell"><div class="core"><div class="list hist" id="hist"></div><div class="hempty" id="hempty" hidden></div></div></div>
+</section>
+<section id="rules" role="tabpanel" aria-labelledby="tab-rules" hidden>
+  <header class="hero">
+    <span class="eyebrow">Policy</span>
+    <h1>Rules.</h1>
+    <p class="lede">Your AP policy in plain English. Preview how every scenario would decide before you save. No code, no redeploy.</p>
+  </header>
+  <p class="hint"><b>Try it:</b> set PO tolerance to 25% and the cap to ₹50,000, then Preview impact. E2's over-billing is now inside tolerance and it flips to Approve.</p>
+  <div class="rules-grid stagger" id="rule-fields"></div>
+  <div class="rulebar">
+    <span class="status" id="rule-status" role="status">Loading…</span>
+    <button class="btn ghost" id="rule-defaults">Restore defaults</button>
+    <button class="btn ghost" id="rule-preview">Preview impact</button>
+    <button class="btn primary" id="rule-save" disabled>Save rules</button>
+  </div>
+  <div class="preview" id="rule-preview-box" hidden>
+    <p class="sec-title">Impact on the demo scenarios <span style="font-weight:400" id="flip-count"></span></p>
+    <div class="shell"><div class="core"><div class="list" id="rule-preview-list"></div></div></div>
+  </div>
+</section>
+<p class="foot">Gemini 2.5 Flash on Vertex AI reads the document. Every decision is made by deterministic, auditable rules.</p>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const inr = n => n == null ? "—" : "₹" + Math.round(n).toLocaleString("en-IN");
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const svg = (p, w = 1.6) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const STAGES = ["Ingest","Extract","Validate","Vendor","PO match","Duplicate","Decide"];
+const ICONS = [
+  '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>',
+  '<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M8 10h8M8 14h5"/>',
+  '<path d="M17 5H7l6 7-6 7h10"/>',
+  '<path d="M4 20V6l8-3v17M12 9h8v11M3 20h18M7 8h2M7 12h2M7 16h2M15 13h2M15 17h2"/>',
+  '<rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+  '<rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
+  '<path d="M12 4v16M8 20h8M5 7h14M5 7l-2.5 6a2.8 2.8 0 0 0 5 0zM19 7l-2.5 6a2.8 2.8 0 0 0 5 0z"/>'];
+const SAMPLE_ICON = {H1:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14l2 2 4-4"/>',
+  E1:'<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/>',
+  E2:'<path d="M4 19h16M6 15l4-4 3 3 5-6"/><path d="M15 8h3v3"/>',
+  E3:ICONS[5], E4:'<path d="M3 10 12 5l9 5M5 10v8M19 10v8M9 10v8M15 10v8M3 20h18"/>',
+  E5:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.8-4.8M8 10.5h5"/>'};
+const GLYPH = {
+  pass:`<svg class="st-glyph pop" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" style="fill:var(--green-dot)"/><path class="draw" d="m7.5 12.3 3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  warn:`<svg class="st-glyph pop" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" style="fill:var(--orange-dot)"/><path d="M12 7v6" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.3" fill="#fff"/></svg>`,
+  fail:`<svg class="st-glyph pop" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" style="fill:var(--red-dot)"/><path class="draw" d="M8.5 8.5l7 7M15.5 8.5l-7 7" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>`,
+  skipped:`<svg class="st-glyph" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="none" style="stroke:var(--ink3)" stroke-width="1.2"/><path d="M8 12h8" style="stroke:var(--ink3)" stroke-width="1.6" stroke-linecap="round"/></svg>`,
+  running:`<span class="spin" role="img" aria-label="running"></span>`, pending:""};
+const WORD = {pass:"passed", warn:"note", fail:"problem found", skipped:"skipped", running:"running", pending:"waiting"};
+const DWORD = {APPROVE:"Approved.", HOLD:"On hold.", REJECT:"Rejected."};
+const LABEL = {sha256:"File fingerprint", type:"Document type", size_kb:"Size (KB)", po_ref:"PO on invoice", lines:"Line items",
+  model_notes:"Model observations", normalised_key:"Duplicate-check ID", checked:"Checked against", matched_by:"Matched by",
+  bank_on_invoice:"Bank on invoice", bank_in_master:"Bank in our records", open_pos_for_vendor:"Open POs for vendor",
+  invoice_taxable_value:"Invoice taxable value", remaining_before:"PO balance before", remaining_after:"PO balance after",
+  billed_before:"Already billed", matched_paid_invoice:"Matching paid invoice", po_amount:"PO amount", invoice_no:"Invoice no."};
+let es, current, seq = 0, filter = "all", lastRuns = [];
+
+// ---------- theme: auto (system) → light → dark
+const THEME_ICON = {
+  auto:'<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor" stroke="none"/>',
+  light:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+  dark:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>'};
+function setTheme(t){
+  if (t === "auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = t;
+  try { t === "auto" ? localStorage.removeItem("iq-theme") : localStorage.setItem("iq-theme", t); } catch {}
+  $("#theme").innerHTML = svg(THEME_ICON[t]);
+  $("#theme").setAttribute("aria-label", `Theme: ${t === "auto" ? "automatic (follows system)" : t}. Click to change.`);
+  $("#theme").title = t === "auto" ? "Theme: Auto" : t === "light" ? "Theme: Light" : "Theme: Dark";
+}
+$("#theme").onclick = () => { const cur = document.documentElement.dataset.theme || "auto"; setTheme({auto:"light", light:"dark", dark:"auto"}[cur]); };
+setTheme(document.documentElement.dataset.theme || "auto");
+
+// ---------- cursor spotlight on cards (one delegated listener, rAF-throttled)
+let spotRAF;
+addEventListener("pointermove", e => {
+  if (REDUCED || spotRAF) return;
+  spotRAF = requestAnimationFrame(() => {
+    spotRAF = null;
+    const c = e.target.closest && e.target.closest(".core"); if (!c) return;
+    const r = c.getBoundingClientRect();
+    c.style.setProperty("--mx", `${e.clientX - r.left}px`); c.style.setProperty("--my", `${e.clientY - r.top}px`);
+  });
+}, {passive:true});
+
+// ---------- count-up numbers
+function countUp(root){
+  root.querySelectorAll("[data-count]").forEach(el => {
+    const to = +el.dataset.count, fmt = el.dataset.fmt, f = v =>
+      fmt === "inr" ? inr(v) : fmt === "usd" ? "$" + v.toFixed(4) : fmt === "dec" ? v.toFixed(1) : Math.round(v).toString();
+    if (REDUCED || !to) { el.textContent = f(to); return; }
+    const t0 = performance.now(), D = 1100;
+    const step = now => { const k = Math.min((now - t0) / D, 1), e = 1 - Math.pow(2, -10 * k); el.textContent = f(to * (k === 1 ? 1 : e)); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+}
+
+// ---------- segmented controls (sliding thumb)
+function slide(seg){
+  const on = seg.querySelector('[aria-selected=true],[aria-pressed=true]'), th = seg.querySelector(".thumb");
+  if (!on || !th || !on.offsetWidth) return;
+  th.style.width = on.offsetWidth + "px";
+  th.style.transform = `translateX(${on.offsetLeft - 3}px)`;
+}
+const slideAll = () => document.querySelectorAll(".seg").forEach(slide);
+addEventListener("resize", slideAll);
+
+// ---------- tabs
+const tabs = [...document.querySelectorAll("[role=tab]")];
+tabs.forEach((b, i) => {
+  b.onclick = () => tab(b.dataset.tab);
+  b.onkeydown = e => { const d = {ArrowRight:1, ArrowLeft:-1}[e.key]; if (d) { const n = tabs[(i + d + tabs.length) % tabs.length]; n.focus(); tab(n.dataset.tab); } };
+});
+function tab(t){
+  tabs.forEach(b => { const on = b.dataset.tab === t; b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; });
+  const show = $("#" + t);
+  tabs.forEach(b => { $("#" + b.dataset.tab).hidden = b.dataset.tab !== t; });
+  show.classList.remove("reveal"); void show.offsetWidth; show.classList.add("reveal");
+  scrollTo({top:0, behavior: REDUCED ? "auto" : "smooth"});
+  if (t === "dash") loadDash();
+  if (t === "rules") loadRules();
+  requestAnimationFrame(slideAll);
+}
+
+// ---------- samples + upload
+fetch("/api/samples").then(r => r.json()).then(list => {
+  const box = $("#samples");
+  box.classList.add("stagger");
+  box.innerHTML = list.map((s, i) => {
+    const code = s.title.split(" ")[0];
+    return `<button class="row" data-i="${i}"><span class="tile">${svg(SAMPLE_ICON[code] || ICONS[0])}</span>
+      <span><span class="t">${esc(s.title.replace(/^\w+ · /, ""))}</span> <span class="tag t-${s.expected}" title="Expected decision">${s.expected.toLowerCase()}</span>
+      <span class="s" style="display:block">${esc(s.scenario)}</span></span><span class="chev" aria-hidden="true">›</span></button>`;
+  }).join("");
+  box.querySelectorAll("button").forEach(b => { const s = list[b.dataset.i];
+    b.onclick = () => start(() => fetch(`/api/upload/sample/${s.file}`, {method:"POST"}), s.title, `/api/samples/${s.file}`); });
+});
+const drop = $("#drop");
+["dragenter","dragover"].forEach(e => drop.addEventListener(e, ev => {ev.preventDefault(); drop.classList.add("over")}));
+["dragleave","drop"].forEach(e => drop.addEventListener(e, ev => {ev.preventDefault(); drop.classList.remove("over")}));
+drop.addEventListener("drop", ev => ev.dataTransfer.files[0] && uploadFile(ev.dataTransfer.files[0]));
+$("#file").onchange = e => { e.target.files[0] && uploadFile(e.target.files[0]); e.target.value = ""; };
+function uploadFile(f){
+  const fd = new FormData(); fd.append("file", f);
+  start(() => fetch("/api/upload", {method:"POST", body:fd}), f.name, URL.createObjectURL(f));
+}
+
+// ---------- live run
+function progress(){
+  const done = [...document.querySelectorAll("#timeline .row")].filter(r => !["pending","running"].includes(r.dataset.s)).length;
+  $("#prog").style.transform = `scaleX(${done / STAGES.length})`;
+}
+function skeleton(title, docUrl){
+  $("#empty").hidden = true; $("#run").hidden = false;
+  $("#rtitle").textContent = title; $("#rbadges").innerHTML = "";
+  $("#rmeta").innerHTML = `<span class="sk" style="height:10px;width:180px;margin-top:6px"></span>`;
+  $("#decision").innerHTML = ""; $("#docwrap").open = false; $("#doc").src = docUrl || "about:blank";
+  const tl = $("#timeline");
+  tl.classList.remove("stagger"); void tl.offsetWidth; tl.classList.add("stagger");
+  tl.innerHTML = STAGES.map((s, i) => `<li class="row" data-s="pending" id="st-${i}">
+    <span class="tile">${svg(ICONS[i])}</span>
+    <div><div class="t">${s}<span class="ms"></span><span class="sr"> · <span class="w">waiting</span></span></div><div class="s">Waiting</div></div>
+    <span class="g"></span></li>`).join("");
+  progress();
+  $("#runcard").scrollIntoView({behavior: REDUCED ? "auto" : "smooth", block:"start"});
+}
+function compare(st){
+  const e = st.evidence || {};
+  if (e.bank_on_invoice && e.bank_on_invoice !== e.bank_in_master && !e.bank_on_invoice.startsWith("—"))
+    return `<div class="cmp"><div class="bad"><small>BANK ON THIS INVOICE</small>${esc(e.bank_on_invoice)}</div><div><small>BANK IN OUR RECORDS</small>${esc(e.bank_in_master)}</div></div>`;
+  if (e.matched_paid_invoice)
+    return `<div class="cmp"><div class="bad"><small>THIS INVOICE</small>${esc(e.this_invoice)}</div><div><small>ALREADY PAID</small>${esc(e.matched_paid_invoice)}</div></div>`;
+  if (st.stage === "PO match" && e.remaining_before && st.status === "fail")
+    return `<div class="cmp"><div class="bad"><small>INVOICE ASKS FOR</small>${esc(e.invoice_taxable_value)}</div><div><small>LEFT ON ${esc((e.po||"").split(" ·")[0])}</small>${esc(e.remaining_before)} of ${esc(e.po_amount)}</div></div>`;
+  return "";
+}
+function paint(st){
+  const i = STAGES.indexOf(st.stage), el = $("#st-" + i); if (!el) return;
+  const changed = el.dataset.s !== st.status;
+  el.dataset.s = st.status;
+  if (changed) el.querySelector(".g").innerHTML = GLYPH[st.status] || "";
+  el.querySelector(".w").textContent = WORD[st.status];
+  el.querySelector(".ms").textContent = st.ms ? `${st.ms} ms` : "";
+  const body = el.querySelector(".s");
+  if (st.status === "running") body.innerHTML = `<span class="sk"></span>`; else body.textContent = st.summary || "";
+  el.querySelectorAll(".more,.cmp").forEach(n => n.remove());
+  const ev = Object.entries(st.evidence || {}).filter(([k]) => k !== "this_invoice");
+  body.insertAdjacentHTML("afterend", compare(st) + (ev.length ? `<details class="more"><summary>Details</summary><table class="kv">${
+    ev.map(([k, v]) => `<tr><td>${esc(LABEL[k] || k.replaceAll("_"," ").replace(/^./, c => c.toUpperCase()))}</td><td class="num">${esc(v)}</td></tr>`).join("")}</table></details>` : ""));
+  progress();
+}
+function fail(msg){
+  document.querySelectorAll('#timeline [data-s=running]').forEach(el => { el.dataset.s = "fail"; el.querySelector(".g").innerHTML = GLYPH.fail; el.querySelector(".s").textContent = "Interrupted."; });
+  $("#rmeta").textContent = "";
+  $("#decision").innerHTML = `<div class="err" role="alert">${esc(msg)}</div>`;
+}
+async function start(req, title, docUrl){
+  const my = ++seq;
+  es && es.close();
+  skeleton(title, docUrl);
+  let token;
+  try {
+    const r = await req();
+    const body = await r.text();
+    if (!r.ok) { let d; try { d = JSON.parse(body).detail } catch { d = body } throw new Error(typeof d === "string" ? d : `Upload rejected (${r.status})`); }
+    token = JSON.parse(body).token;
+  } catch (e) { if (my === seq) fail("Couldn't start: " + e.message); return; }
+  if (my !== seq) return;  // a newer run started while this upload was in flight
+  es = new EventSource(`/api/process/${token}`);
+  let done = false;
+  es.addEventListener("stage", e => paint(JSON.parse(e.data)));
+  es.addEventListener("done", e => { done = true; es.close(); render(JSON.parse(e.data), true); qbadge(); });
+  es.onerror = () => { es.close(); if (!done && my === seq) fail("Connection lost. The run may still have finished. Open it from the Dashboard."); };
+}
+
+// ---------- decision
+function verdict(d){
+  if (d.decision === "APPROVE") return `All checks passed. Ready to pay ${inr(d.payment.net_payable)}.`;
+  const top = d.reasons.find(r => r.severity !== "note");
+  return top ? top.text.split(/(?<=\.)\s/)[0] : "";
+}
+function render(run, scroll){
+  current = run;
+  const d = run.data.decision, p = d.payment || {}, u = run.data.usage || {};
+  const blocked = d.decision === "REJECT" || d.high_risk;
+  $("#rtitle").textContent = run.filename;
+  $("#rbadges").innerHTML = [
+    run.data.digital === false ? `<span class="tag t-gray">scanned · vision</span>` : run.data.digital ? `<span class="tag t-gray">digital PDF</span>` : "",
+    u.cached ? `<span class="tag t-HOLD" title="${u.cached === "mock" ? "Mock mode: no model call" : "Live model unavailable; last good extraction of this exact file used"}">cached extraction</span>` : "",
+    d.high_risk ? `<span class="tag t-risk">High risk</span>` : ""].join("");
+  $("#rmeta").textContent = `Run #${run.id} · ${run.duration_s}s · ` + (u.cached ? "no model call" : `$${(run.cost_usd||0).toFixed(4)} (≈ ₹${((run.cost_usd||0) * 85).toFixed(2)})`);
+  const top = d.reasons.filter(r => r.severity === (d.decision === "REJECT" ? "reject" : "hold"));
+  const rest = d.reasons.filter(r => !top.includes(r));
+  const li = r => `<li><a href="#st-${STAGES.indexOf(r.stage)}">${esc(r.stage)}</a><span>${esc(r.text)}</span></li>`;
+  document.querySelectorAll(".stages .row.cause").forEach(n => n.classList.remove("cause","hold"));
+  top.forEach(r => { const el = $("#st-" + STAGES.indexOf(r.stage)); el && el.classList.add("cause", r.severity); });
+  const rv = run.review;
+  $("#decision").innerHTML = `<div class="decision ${d.decision}" role="status">
+    <span class="eyebrow">Decision</span>
+    <div class="dword">${DWORD[d.decision]}</div>
+    <div class="verdict">${esc(verdict(d))}</div>
+    ${top.length > 1 ? `<ul class="reasons">${top.map(li).join("")}</ul>` : ""}
+    ${blocked ? `<div class="blocked num"><span class="tag t-REJECT">Blocked</span>${inr(p.total)} will not be paid.</div>` : `<div class="stats num">
+      <div><small>Invoice total</small><b>${inr(p.total)}</b></div>
+      <div><small>Taxable value</small><b>${inr(p.taxable_value)}</b></div>
+      <div><small>${p.tds_section ? "TDS · " + esc(p.tds_section) : "TDS · none"}</small><b>${inr(p.tds)}</b></div>
+      <div><small>Net payable</small><b>${inr(p.net_payable)}</b></div>
+      <div><small>Sign-off</small><b style="font-size:15px">${esc(p.approver || "—")}</b></div></div>`}
+    <div class="next"><b>Next step.</b> ${esc(d.next_action)}</div>
+    ${rest.length ? `<details class="more" style="margin-top:12px"><summary>Also noted (${rest.length})</summary><ul class="reasons">${rest.map(li).join("")}</ul></details>` : ""}
+    ${d.note ? `<details class="more" ${d.decision !== "APPROVE" ? "open" : ""} style="margin-top:12px"><summary>${d.high_risk ? "Internal alert, drafted" : d.decision === "APPROVE" ? "Posting note" : "Message to vendor, drafted"}</summary>
+      <div class="note"><button class="copy" id="copy">Copy</button>${esc(d.note)}</div></details>` : ""}
+    ${d.decision === "HOLD" && !rv ? `<div class="actions"><input id="rnote" placeholder="Add a note, e.g. called vendor, confirmed" aria-label="Reviewer note">
+      <button class="btn primary" onclick="review('approve')">Approve</button><button class="btn quiet" onclick="review('reject')">Reject</button><span id="rerr" role="alert" style="color:var(--red);font-size:13px"></span></div>` : ""}
+    ${rv ? `<div class="reviewed">Reviewed: <b>${rv.action === "approve" ? "approved" : "rejected"}</b> by ${esc(rv.by)} · ${new Date(rv.at * 1000).toLocaleString()}${rv.note ? ` · “${esc(rv.note)}”` : ""}</div>` : ""}
+    <details class="more" style="margin-top:12px"><summary>Extracted fields</summary><pre class="note" style="max-height:320px;overflow:auto;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace">${esc(JSON.stringify(run.data.extracted, null, 2))}</pre></details>
+  </div>`;
+  const c = $("#copy");
+  if (c) c.onclick = () => navigator.clipboard.writeText(d.note).then(() => c.textContent = "Copied", () => c.textContent = "Select to copy")
+    .finally(() => setTimeout(() => c.textContent = "Copy", 1600));
+  if (scroll) setTimeout(() => $("#decision").scrollIntoView({behavior: REDUCED ? "auto" : "smooth", block:"nearest"}), 250);
+}
+async function review(action){
+  const r = await fetch(`/api/runs/${current.id}/review`, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({action, note: $("#rnote").value})}).catch(() => null);
+  if (r && r.ok) { render(await r.json()); qbadge(); } else $("#rerr").textContent = "Couldn't save. Try again.";
+}
+async function openRun(id){
+  const run = await (await fetch(`/api/runs/${id}`)).json();
+  tab("process"); es && es.close(); seq++;
+  skeleton(run.filename, `/api/runs/${run.id}/pdf`);
+  run.data.stages.forEach(paint); render(run);
+}
+
+// ---------- dashboard
+function ring(c, pct){
+  const n = c.APPROVE + c.HOLD + c.REJECT, R = 80, C = 2 * Math.PI * R;
+  const parts = [["APPROVE","var(--green-dot)"],["HOLD","var(--orange-dot)"],["REJECT","var(--red-dot)"]];
+  let off = 0;
+  const arcs = n ? parts.map(([k, col]) => {
+    const len = c[k] / n * C, gap = c[k] && n > c[k] ? 8 : 0;
+    const a = c[k] ? `<circle cx="98" cy="98" r="${R}" style="stroke:${col}" stroke-dasharray="0 ${C}" data-d="${Math.max(len - gap, .01)} ${C}" stroke-dashoffset="${-off}"/>` : "";
+    off += len; return a; }).join("") : "";
+  return `<div class="ringbox"><svg class="ring" viewBox="0 0 196 196" role="img" aria-label="Approved ${c.APPROVE}, on hold ${c.HOLD}, rejected ${c.REJECT}">
+    <circle cx="98" cy="98" r="${R}" style="stroke:var(--fill)"/>${arcs}</svg>
+    <div class="ringlabel"><b class="num"><span data-count="${pct}" data-fmt="int">0</span><sup>%</sup></b><span>auto-approved</span></div></div>`;
+}
+function dashSkeleton(){
+  const s = (cls = "") => `<div class="shell ${cls}"><div class="core"><div class="kpi"><span class="sk" style="height:11px;width:45%"></span><span class="sk" style="height:30px;width:60%;margin-top:14px"></span><span class="sk" style="height:10px;width:70%;margin-top:10px"></span></div></div></div>`;
+  $("#kpis").innerHTML = s("big") + s() + s() + s() + s() + s("wide") + s("wide");
+}
+async function loadDash(){
+  if (!lastRuns.length) dashSkeleton();
+  const [m, runs] = await Promise.all([fetch("/api/metrics").then(r => r.json()), fetch("/api/runs").then(r => r.json())]);
+  lastRuns = runs; lastMetrics = m; roi();
+  const F = m.formulas, c = m.counts;
+  const card = (inner, cls = "") => `<div class="shell lift ${cls}"><div class="core">${inner}</div></div>`;
+  const how = f => f ? `<details class="more"><summary>How it's calculated</summary><p>${esc(f)}</p></details>` : "";
+  const kpi = (label, valHTML, sub, f) => `<div class="kpi"><small>${label}</small><b class="num">${valHTML}</b><em>${sub || ""}</em>${how(f)}</div>`;
+  const cnt = (v, fmt) => `<span data-count="${v}" data-fmt="${fmt}">0</span>`;
+  const box = $("#kpis");
+  box.classList.remove("stagger"); void box.offsetWidth; box.classList.add("stagger");
+  box.innerHTML =
+    card(`<div class="kpi ringtile">${ring(c, m.auto_approval_rate)}<div class="ringside"><small>Invoices processed</small><b class="num">${cnt(m.processed, "int")}</b>
+      <ul class="legend"><li><i style="background:var(--green-dot)"></i><span>Approved</span><span>${c.APPROVE}</span></li>
+      <li><i style="background:var(--orange-dot)"></i><span>On hold</span><span>${c.HOLD}</span></li>
+      <li><i style="background:var(--red-dot)"></i><span>Rejected</span><span>${c.REJECT}</span></li></ul>${how(F.auto_approval_rate)}</div></div>`, "big") +
+    card(kpi("Value protected", cnt(m.protected_value, "inr"), "duplicates and fraud stopped", F.protected_value)) +
+    card(`<a class="kpi-link" id="qtile" role="button" tabindex="0">${kpi("Awaiting review", cnt(m.pending_review, "int"), inr(m.on_hold_value) + " on hold · open queue ›")}</a>`) +
+    card(kpi("AP hours saved", cnt(m.hours_saved, "dec"), "vs fully manual", F.hours_saved)) +
+    card(kpi("Avg. processing", cnt(m.avg_seconds, "dec") + "s", "vs ~12 min by hand")) +
+    card(kpi("Cost per invoice", cnt(m.cost_per_invoice_usd, "usd"), "total $" + m.total_cost_usd.toFixed(4), F.cost_per_invoice_usd), "wide") +
+    card(kpi("Reviewer override", cnt(m.override_rate, "dec") + "%", "high means rules are too strict", F.override_rate), "wide");
+  countUp(box);
+  setTimeout(() => document.querySelectorAll(".ring [data-d]").forEach(a => a.setAttribute("stroke-dasharray", a.dataset.d)), 120);
+  const q = $("#qtile"); q.onclick = q.onkeydown = e => { if (e.type === "click" || e.key === "Enter") { filter = "queue"; hist(); $("#hist").scrollIntoView({behavior:"smooth", block:"center"}); } };
+  hist();
+}
+function hist(){
+  const rows = filter === "queue" ? lastRuns.filter(r => r.decision === "HOLD" && !r.review) : lastRuns;
+  $("#fall").setAttribute("aria-pressed", filter === "all"); $("#fq").setAttribute("aria-pressed", filter === "queue");
+  requestAnimationFrame(slideAll);
+  $("#hempty").hidden = rows.length > 0;
+  $("#hempty").textContent = filter === "queue" ? "Nothing waiting. The queue is clear." : "No runs yet. Process an invoice and it will appear here.";
+  const G = {APPROVE:"✓", HOLD:"!", REJECT:"✕"};
+  const h = $("#hist");
+  h.classList.remove("stagger"); void h.offsetWidth; h.classList.add("stagger");
+  h.innerHTML = rows.map(r => `<button class="row" onclick="openRun(${r.id})">
+    <span class="dot d-${r.decision}" aria-label="${r.decision}">${G[r.decision]}</span>
+    <span style="min-width:0"><span class="t">${esc(r.vendor_name || "Unknown vendor")}</span><span class="tags">
+      ${r.high_risk ? '<span class="tag t-risk">High risk</span>' : ""}${r.review ? `<span class="tag t-gray">reviewed · ${r.review.action}</span>` : ""}${r.cached ? '<span class="tag t-gray">cached</span>' : ""}</span>
+      <span class="s" style="display:block">${esc(r.invoice_number || "—")}${r.reason ? " · " + esc(r.reason) : ""}</span></span>
+    <span class="amt num"><b>${inr(r.total)}</b><small>#${r.id} · ${new Date(r.created_at * 1000).toLocaleString([], {day:"numeric", month:"short", hour:"2-digit", minute:"2-digit"})} · ${r.duration_s}s</small></span></button>`).join("");
+}
+// ---------- ROI calculator (client-side; uses the observed hold rate and model cost)
+let lastMetrics;
+const ROI_KEYS = {vol:500, rate:400, avg:50000, leak:0.1};
+try { const saved = JSON.parse(localStorage.getItem("iq-roi") || "{}"); Object.keys(ROI_KEYS).forEach(k => { if (saved[k] != null) ROI_KEYS[k] = saved[k]; }); } catch {}
+Object.entries(ROI_KEYS).forEach(([k, v]) => { const el = $("#roi-" + k); el.value = v; el.oninput = roi; });
+function roi(){
+  const v = k => Math.max(+$("#roi-" + k).value || 0, 0), vol = v("vol"), rate = v("rate"), avg = v("avg"), leak = v("leak");
+  try { localStorage.setItem("iq-roi", JSON.stringify({vol, rate, avg, leak})); } catch {}
+  const m = lastMetrics || {}, observed = m.hold_rate != null;
+  const holdRate = observed ? m.hold_rate : 0.3, manual = m.manual_min || 12, review = m.review_min || 4, cpi = m.cost_per_invoice_usd || 0.0015;
+  const hours = vol * (manual - holdRate * review) / 60, labour = hours * 12 * rate, caught = vol * 12 * avg * leak / 100, llm = vol * 12 * cpi * 85;
+  $("#roi-out").innerHTML = `
+    <div class="hero-num"><small>Net benefit per year</small><b class="num">${inr(labour + caught - llm)}</b><em>labour saved + overpayments caught − model cost</em></div>
+    <div><small>Hours freed per month</small><b class="num">${Math.round(hours).toLocaleString("en-IN")}</b><em>≈ ${(hours / 160).toFixed(1)} full-time clerks</em></div>
+    <div><small>Labour saved per year</small><b class="num">${inr(labour)}</b><em>hours × 12 × hourly cost</em></div>
+    <div><small>Overpayments caught per year</small><b class="num">${inr(caught)}</b><em>at your ${leak}% estimate</em></div>
+    <div><small>Model cost per year</small><b class="num">${inr(llm)}</b><em>${vol * 12} invoices × $${cpi.toFixed(4)}</em></div>
+    <p class="roi-note">${observed ? `Uses the hold rate observed in your ${m.processed} runs (${Math.round(holdRate * 100)}%)` : "No runs yet, so it assumes a 30% hold rate"}. Manual handling ${manual} min per invoice; review ${review} min per hold. ₹85 per $.</p>`;
+}
+roi();
+
+// ---------- rules (policy) editor with what-if preview
+const FIELDS = [
+  {k:"po_tolerance_pct", t:"PO tolerance", h:"How far an invoice may exceed the remaining PO balance before it is held.", u:"% of invoice", step:0.5},
+  {k:"po_tolerance_cap", t:"Tolerance cap", h:"Upper limit on that tolerance, in rupees, however large the invoice.", u:"₹", step:500},
+  {k:"scan_confidence_min", t:"Scan confidence floor", h:"Scanned invoices the model reads with less confidence than this go to a human.", u:"0.50 – 1.00", step:0.01},
+  {k:"vendor_name_match_min", t:"Vendor name match", h:"How closely a name must match the vendor master when no GSTIN matches.", u:"0.60 – 1.00", step:0.01},
+  {k:"ap_manager_limit", t:"AP Manager signs up to", h:"Approved invoices up to this total need only AP Manager sign-off.", u:"₹", step:10000},
+  {k:"controller_limit", t:"Finance Controller signs up to", h:"Above this total, the CFO signs off.", u:"₹", step:50000}];
+let savedPolicy, defaultPolicy;
+async function loadRules(){
+  const r = await (await fetch("/api/policy")).json();
+  savedPolicy = r.policy; defaultPolicy = r.defaults;
+  fillRules(savedPolicy);
+  $("#rule-status").textContent = "Changes apply to the next invoice.";
+}
+function fillRules(p){
+  $("#rule-fields").innerHTML = FIELDS.map(f => `<div class="shell lift"><div class="core field" data-k="${f.k}">
+      <b><span class="mod" aria-hidden="true"></span>${f.t}</b><p>${f.h}</p>
+      <div class="inp"><input type="number" id="pol-${f.k}" step="${f.step}" value="${p[f.k]}" aria-label="${f.t}"><span>${f.u}</span></div></div></div>`).join("") +
+    `<div class="shell lift"><div class="core field" data-k="approve_inferred_po">
+      <b><span class="mod" aria-hidden="true"></span>Approve when the PO is inferred</b><p>If off, any invoice without a PO number is held until the requester confirms which PO it belongs to.</p>
+      <div class="inp" style="justify-content:space-between"><span id="inf-word">${p.approve_inferred_po ? "On" : "Off"}</span><input type="checkbox" class="switch" id="pol-approve_inferred_po" ${p.approve_inferred_po ? "checked" : ""} aria-label="Approve when the PO is inferred"></div></div></div>`;
+  $("#rule-fields").querySelectorAll("input").forEach(i => i.oninput = markRules);
+  markRules();
+}
+function readRules(){
+  const p = {};
+  FIELDS.forEach(f => p[f.k] = +$("#pol-" + f.k).value);
+  p.approve_inferred_po = $("#pol-approve_inferred_po").checked;
+  return p;
+}
+function markRules(){
+  const p = readRules(); let n = 0;
+  $("#inf-word").textContent = p.approve_inferred_po ? "On" : "Off";
+  document.querySelectorAll(".field").forEach(el => { const k = el.dataset.k, ch = p[k] !== savedPolicy[k]; el.classList.toggle("changed", ch); n += ch; });
+  $("#rule-save").disabled = !n;
+  $("#rule-status").textContent = n ? `${n} unsaved change${n > 1 ? "s" : ""}` : "Changes apply to the next invoice.";
+  $("#rule-preview-box").hidden = true;
+}
+const apiError = async r => { try { const d = (await r.json()).detail; return Array.isArray(d) ? d.map(x => x.msg.replace(/^Value error, /, "")).join("; ") : d; } catch { return `Error ${r.status}`; } };
+$("#rule-defaults").onclick = () => { fillRules(defaultPolicy); };
+$("#rule-preview").onclick = async () => {
+  const b = $("#rule-preview"); b.disabled = true; $("#rule-status").textContent = "Replaying every scenario…";
+  const r = await fetch("/api/policy/preview", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(readRules())}).catch(() => null);
+  b.disabled = false;
+  if (!r || !r.ok) { $("#rule-status").textContent = r ? await apiError(r) : "Couldn't reach the server."; return; }
+  const rows = await r.json(), flips = rows.filter(x => x.changed).length;
+  $("#flip-count").textContent = flips ? `· ${flips} would change` : "· nothing changes";
+  const L = $("#rule-preview-list");
+  L.classList.remove("stagger"); void L.offsetWidth; L.classList.add("stagger");
+  L.innerHTML = rows.map(x => `<div class="row ${x.changed ? "flip" : ""}"><span class="tile">${svg(SAMPLE_ICON[x.title.split(" ")[0]] || ICONS[0])}</span>
+    <span style="min-width:0"><span class="t">${esc(x.title)}</span><span class="s" style="display:block">${esc(x.proposed.reason || "All checks pass.")}${x.proposed.approver ? " · sign-off: " + esc(x.proposed.approver) : ""}</span></span>
+    <span class="arrow"><span class="tag t-${x.current.decision}">${x.current.decision.toLowerCase()}</span><i>→</i><span class="tag t-${x.proposed.decision}">${x.proposed.decision.toLowerCase()}</span></span></div>`).join("");
+  $("#rule-preview-box").hidden = false;
+  $("#rule-status").textContent = flips ? `${flips} decision${flips > 1 ? "s" : ""} would change. Save to apply.` : "No decision changes. Save to apply.";
+  $("#rule-preview-box").scrollIntoView({behavior: REDUCED ? "auto" : "smooth", block:"nearest"});
+};
+$("#rule-save").onclick = async () => {
+  const r = await fetch("/api/policy", {method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify(readRules())}).catch(() => null);
+  if (!r || !r.ok) { $("#rule-status").textContent = r ? await apiError(r) : "Couldn't reach the server."; return; }
+  savedPolicy = await r.json(); markRules();
+  $("#rule-status").textContent = "Saved. The next invoice uses these rules.";
+};
+
+$("#fall").onclick = () => { filter = "all"; hist(); };
+$("#fq").onclick = () => { filter = "queue"; hist(); };
+async function qbadge(){
+  const m = await (await fetch("/api/metrics")).json();
+  $("#qbadge").innerHTML = m.pending_review ? `<span class="badge" title="Invoices awaiting review">${m.pending_review}</span>` : "";
+  requestAnimationFrame(slideAll);
+}
+$("#reset").onclick = async () => { if (confirm("Clear all run history?")) { await fetch("/api/reset", {method:"POST"}); lastRuns = []; loadDash(); qbadge(); } };
+qbadge(); requestAnimationFrame(slideAll);
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "vendor_name": "ACME OFFICE SUPPLY PVT. LTD.",
+  "vendor_gstin": "29AABCA1234F1Z5",
+  "bill_to_gstin": "29AAACZ0001A1Z9",
+  "invoice_number": "INV-0061",
+  "invoice_date": "2026-10-12",
+  "due_date": "Net 30",
+  "po_reference": null,
+  "currency": "Rs.",
+  "line_items": [
+    {
+      "description": "Ergonomic mesh chair, high back",
+      "quantity": 30.0,
+      "unit_price": 4500.0,
+      "amount": 135000.0
+    }
+  ],
+  "subtotal": 135000.0,
+  "cgst": 12150.0,
+  "sgst": 12150.0,
+  "igst": null,
+  "total_tax": null,
+  "tax_inclusive": false,
+  "tax_rate": null,
+  "total": 159300.0,
+  "bank_account": "7712093349910",
+  "ifsc": "KKBK0000958",
+  "confidence": 0.9,
+  "notes": [
+    "bank details change notice"
+  ]
+}

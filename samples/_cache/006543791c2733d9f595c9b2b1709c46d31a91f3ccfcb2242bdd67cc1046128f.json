@@ -1,0 +1,48 @@
+{
+  "vendor_name": "ACME OFFICE SUPPLIES PVT LTD",
+  "vendor_gstin": "29AABCA1234F1Z5",
+  "bill_to_gstin": "29AAACZ0001A1Z9",
+  "invoice_number": "INV-0057",
+  "invoice_date": "2026-10-09",
+  "due_date": null,
+  "po_reference": "PO-2026-0412",
+  "currency": "Rs.",
+  "line_items": [
+    {
+      "description": "A4 copier paper 75 GSM (ream of 500)",
+      "quantity": 120.0,
+      "unit_price": 210.0,
+      "amount": 25200.0
+    },
+    {
+      "description": "Ball pens, blue (box of 50)",
+      "quantity": 40.0,
+      "unit_price": 325.0,
+      "amount": 13000.0
+    },
+    {
+      "description": "Whiteboard markers (set of 4)",
+      "quantity": 60.0,
+      "unit_price": 105.0,
+      "amount": 6300.0
+    },
+    {
+      "description": "Heavy-duty stapler",
+      "quantity": 20.0,
+      "unit_price": 200.0,
+      "amount": 4000.0
+    }
+  ],
+  "subtotal": 48500.0,
+  "cgst": 4365.0,
+  "sgst": 4365.0,
+  "igst": null,
+  "total_tax": null,
+  "tax_inclusive": false,
+  "tax_rate": 0.09,
+  "total": 57230.0,
+  "bank_account": "50100234564521",
+  "ifsc": "HDFC0001234",
+  "confidence": 0.9,
+  "notes": []
+}

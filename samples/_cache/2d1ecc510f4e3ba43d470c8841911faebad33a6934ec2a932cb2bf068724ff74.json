@@ -1,0 +1,30 @@
+{
+  "vendor_name": "Brightline IT Services LLP",
+  "vendor_gstin": "29AAKFB9012L1Z8",
+  "bill_to_gstin": "29AAACZ0001A1Z9",
+  "invoice_number": "BL/2026/1187",
+  "invoice_date": "2026-10-06",
+  "due_date": null,
+  "po_reference": "PO-2026-0377",
+  "currency": "Rs",
+  "line_items": [
+    {
+      "description": "Annual IT support & AMC - FY 2026-27 (12 months, 45 endpoints, 8x5 helpdesk) Price inclusive of GST @ 18%",
+      "quantity": null,
+      "unit_price": null,
+      "amount": 141600.0
+    }
+  ],
+  "subtotal": null,
+  "cgst": null,
+  "sgst": null,
+  "igst": null,
+  "total_tax": null,
+  "tax_inclusive": true,
+  "tax_rate": 0.18,
+  "total": 141600.0,
+  "bank_account": "38291003301",
+  "ifsc": "SBIN0040211",
+  "confidence": 0.95,
+  "notes": []
+}

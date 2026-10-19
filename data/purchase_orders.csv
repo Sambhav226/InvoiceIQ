@@ -1,0 +1,7 @@
+po_number,vendor_id,description,amount,tax_rate,billed_to_date,status
+PO-2026-0412,V001,Office stationery & consumables Q3,48500,0.18,0,open
+PO-2026-0455,V001,Ergonomic chairs (30 units),135000,0.18,0,open
+PO-2026-0150,V001,Printer toner & paper (Aug),20000,0.18,20000,closed
+PO-2026-0377,V003,Annual IT support & AMC FY26-27,120000,0.18,0,open
+PO-2026-0291,V002,Freight services Jul-Dec 2026,500000,0.18,300000,open
+PO-2026-0498,V003,Office network refresh (Indiranagar),200000,0.18,0,open
